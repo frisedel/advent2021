@@ -35,11 +35,11 @@ def a1_2(values: List[int]):
 
 def main():
 
-    values = []
+    lines = []
     with open("depth.txt") as f:
         lines = f.readlines()
-        values = [int(i) for i in lines]
     f.close()
+    values = [int(i) for i in lines]
 
     print("part 1: ", a1_1(values))
     print("part 2: ", a1_2(values))
