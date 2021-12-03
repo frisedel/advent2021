@@ -2,7 +2,7 @@
 
 import pytest
 
-from day3.adv3 import adv3_1, convert_binary, get_rates, adv3_2, calc_common, co2_scrubber_rating, oxygen_generator_rating
+from day3.adv3 import adv3_1, convert_binary, get_rates, adv3_2, calc_common_bits, co2_scrubber_rating, oxygen_generator_rating
 
 def test_adv3_1():
     diagnostic_codes = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"]
@@ -45,8 +45,8 @@ def test_co2_scrubber_rating():
 def test_calc_common():
     diagnostic_codes = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"]
 
-    common_first_bit_o2 = calc_common(diagnostic_codes, 0, "o2")
+    common_first_bit_o2 = calc_common_bits(diagnostic_codes, 0, "o2")
     assert common_first_bit_o2 == 1
 
-    common_first_bit_co2 = calc_common(diagnostic_codes, 0, "co2")
+    common_first_bit_co2 = calc_common_bits(diagnostic_codes, 0, "co2")
     assert common_first_bit_co2 == 0

@@ -45,7 +45,7 @@ def adv3_1(diag_codes: List[str]):
     return(gamma_value * epsilon_value)
 
 
-def calc_common(codes: List[str], index: int, gas: str):
+def calc_common_bits(codes: List[str], index: int, gas: str):
     one = 0
     zero = 0
 
@@ -72,7 +72,7 @@ def oxygen_generator_rating(diag_codes: List[str], start_index: int):
     if len(diag_codes) == 1:
         return convert_binary(diag_codes[0])
     codes_for_next = []
-    most_common = calc_common(diag_codes, start_index, "o2")
+    most_common = calc_common_bits(diag_codes, start_index, "o2")
     for code in diag_codes:
         bits = list(code)
         if int(bits[start_index]) == most_common:
@@ -84,7 +84,7 @@ def co2_scrubber_rating(diag_codes: List[str], start_index: int):
     if len(diag_codes) == 1:
         return convert_binary(diag_codes[0])
     codes_for_next = []
-    most_common = calc_common(diag_codes, start_index, "co2")
+    most_common = calc_common_bits(diag_codes, start_index, "co2")
     for code in diag_codes:
         bits = list(code)
         if int(bits[start_index]) == most_common:
