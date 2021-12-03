@@ -2,7 +2,7 @@
 
 import pytest
 
-from day3.adv3 import adv3_1, convert_binary, get_rates, adv3_2, calc_common_bits, co2_scrubber_rating, oxygen_generator_rating
+from day3.adv3 import adv3_1, convert_binary, get_gas_rating, get_rates, adv3_2, calc_common_bits
 
 def test_adv3_1():
     diagnostic_codes = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"]
@@ -30,17 +30,15 @@ def test_adv3_2():
     life_support_rating = adv3_2(diagnostic_codes)
     assert life_support_rating == 230
 
-def test_oxygen_generator_rating():
+def test_get_gas_rating():
     diagnostic_codes = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"]
 
-    oxygen = oxygen_generator_rating(diagnostic_codes, 0)
+    oxygen = get_gas_rating(diagnostic_codes, 0, "o2")
     assert oxygen == 23
 
-def test_co2_scrubber_rating():
-    diagnostic_codes = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"]
+    carbondioxid = get_gas_rating(diagnostic_codes, 0, "co2")
+    assert carbondioxid == 10
 
-    oxygen = co2_scrubber_rating(diagnostic_codes, 0)
-    assert oxygen == 10
 
 def test_calc_common():
     diagnostic_codes = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"]

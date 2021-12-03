@@ -68,36 +68,23 @@ def calc_common_bits(codes: List[str], index: int, gas: str):
             return 0
 
 
-def oxygen_generator_rating(diag_codes: List[str], start_index: int):
+def get_gas_rating(diag_codes: List[str], start_index: int, gas: str):
     if len(diag_codes) == 1:
         return convert_binary(diag_codes[0])
     codes_for_next = []
-    most_common = calc_common_bits(diag_codes, start_index, "o2")
+    most_common = calc_common_bits(diag_codes, start_index, gas)
     for code in diag_codes:
         bits = list(code)
         if int(bits[start_index]) == most_common:
             codes_for_next.append(code)
-    return oxygen_generator_rating(codes_for_next, start_index+1)
-
-
-def co2_scrubber_rating(diag_codes: List[str], start_index: int):
-    if len(diag_codes) == 1:
-        return convert_binary(diag_codes[0])
-    codes_for_next = []
-    most_common = calc_common_bits(diag_codes, start_index, "co2")
-    for code in diag_codes:
-        bits = list(code)
-        if int(bits[start_index]) == most_common:
-            codes_for_next.append(code)
-    return co2_scrubber_rating(codes_for_next, start_index+1)
+    return get_gas_rating(codes_for_next, start_index+1, gas)
 
 
 def adv3_2(diag_codes: List[str]):
-
-    oxygen_rating: int = oxygen_generator_rating(diag_codes, 0)
-    co2_rating: int = co2_scrubber_rating(diag_codes, 0)
-    print("o2:", oxygen_rating,"co2:", co2_rating)
-    return oxygen_rating * co2_rating
+    o2_rating: int = get_gas_rating(diag_codes, 0, "o2")
+    co2_rating: int = get_gas_rating(diag_codes, 0, "co2")
+    print("o2:", o2_rating,"co2:", co2_rating)
+    return o2_rating * co2_rating
 
 
 def main():
