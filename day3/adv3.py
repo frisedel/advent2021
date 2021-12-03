@@ -94,8 +94,8 @@ def co2_scrubber_rating(diag_codes: List[str], start_index: int):
 
 def adv3_2(diag_codes: List[str]):
 
-    oxygen_rating: str = oxygen_generator_rating(diag_codes, 0)
-    co2_rating: str = co2_scrubber_rating(diag_codes, 0)
+    oxygen_rating: int = oxygen_generator_rating(diag_codes, 0)
+    co2_rating: int = co2_scrubber_rating(diag_codes, 0)
     print("o2:", oxygen_rating,"co2:", co2_rating)
     return oxygen_rating * co2_rating
 
@@ -106,8 +106,8 @@ def main():
         lines = f.read().splitlines()
     f.close()
 
-    print("part 1:", adv3_1(lines))
-    print("part 2:", adv3_2(lines))
+    print("part 1 - power consumption:", adv3_1(lines))
+    print("part 2 - life support rating:", adv3_2(lines))
 
 if __name__ == '__main__':
     main()
