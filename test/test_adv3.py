@@ -4,15 +4,13 @@ import pytest
 
 from day3.adv3 import adv3_1, convert_binary, get_gas_rating, get_rates, adv3_2, calc_common_bits
 
-def test_adv3_1():
-    diagnostic_codes = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"]
+diagnostic_codes = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"]
 
+def test_adv3_1():
     power_consumption = adv3_1(diagnostic_codes)
     assert power_consumption == 198
 
 def test_get_rates():
-    diagnostic_codes = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"]
-
     gamma, epislon = get_rates(diagnostic_codes)
     assert gamma == "10110"
     assert epislon == "01001"
@@ -25,14 +23,10 @@ def test_convert_binary():
     assert epislon == 9
 
 def test_adv3_2():
-    diagnostic_codes = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"]
-
     life_support_rating = adv3_2(diagnostic_codes)
     assert life_support_rating == 230
 
 def test_get_gas_rating():
-    diagnostic_codes = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"]
-
     oxygen = get_gas_rating(diagnostic_codes, 0, "o2")
     assert oxygen == 23
 
@@ -41,8 +35,6 @@ def test_get_gas_rating():
 
 
 def test_calc_common():
-    diagnostic_codes = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"]
-
     common_first_bit_o2 = calc_common_bits(diagnostic_codes, 0, "o2")
     assert common_first_bit_o2 == 1
 
