@@ -109,7 +109,7 @@ def get_last_winning_board(boards: list, numbers: List[int], lates_board: int, l
         print(lates_board, latest_number)
         return (lates_board, latest_number)
     boards_for_next = get_boards_for_next(boards, next_board)
-    numbers_for_next = get_numbers_for_next(numbers, next_board)
+    numbers_for_next = get_numbers_for_next(numbers, next_number)
     return get_last_winning_board(boards_for_next, numbers_for_next, next_board, next_number)
 
 
@@ -127,7 +127,7 @@ def adv4_2(bingo_boards: List[str], bingo_numbers: List[str]):
 
     last_winning_board, last_winning_number = let_the_squid_winn(boards, numbers)
     last_index = last_winning_board-1
-    last_score = calculate_winning_score(boards[last_index], 24)
+    last_score = calculate_winning_score(boards[last_index], last_winning_number)
 
     return last_score
 
