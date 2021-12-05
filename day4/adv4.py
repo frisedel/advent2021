@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 def clean_boards(data: List[str]) -> List[str]:
     cleaned = list(filter(('\n').__ne__, data))
@@ -48,7 +48,7 @@ def mark_numbers(boards: list, number: int):
                     value['found'] = True
 
 
-def get_first_winning_board(boards: list, numbers: List[int]):
+def get_first_winning_board(boards: list, numbers: List[int]) -> Tuple[int, int]:
     for number in numbers:
         mark_numbers(boards, number)
         for board in boards:
@@ -85,12 +85,52 @@ def adv4_1(bingo_numbers: List[str], boards_data: List[str]):
     score = calculate_winning_score(boards[winning_index], last_number)
     return score
 
+def get_numbers_for_next(numbers: List[int], last: int):
+    numbers_for_next = []
+    for number in numbers:
+        if number != last:
+            numbers_for_next.append(number)
+    return numbers_for_next
 
-def adv4_2():
-    # recursive func like first winning score. go untill no winning board or last board
-    # return all the way back
-    # check if boars is winner, if is - go in again and calc with next number or remove from a list?
-    pass
+def get_boards_for_next(boards: list, last_board: int):
+    boards_for_next = []
+    for board in boards:
+        if board['board num'] != last_board:
+            boards_for_next.append(board)
+
+    return boards_for_next
+
+
+def get_last_winning_board(boards: list, numbers: List[int], lates_board: int, latest_number: int):
+    try:
+        next_board, next_number = get_first_winning_board(boards, numbers)
+    except:
+        print("FOUND THE END")
+        print(lates_board, latest_number)
+        return (lates_board, latest_number)
+    boards_for_next = get_boards_for_next(boards, next_board)
+    numbers_for_next = get_numbers_for_next(numbers, next_board)
+    return get_last_winning_board(boards_for_next, numbers_for_next, next_board, next_number)
+
+
+def let_the_squid_winn(boards: list, numbers: List[int]):
+    first_winning_board, first_winning_number = get_first_winning_board(boards, numbers)
+    boards_for_next = get_boards_for_next(boards, first_winning_board)
+    numbers_for_next = get_numbers_for_next(numbers, first_winning_number)
+
+    return get_last_winning_board(boards_for_next, numbers_for_next, first_winning_board, first_winning_number)
+
+
+def adv4_2(bingo_boards: List[str], bingo_numbers: List[str]):
+    boards = create_boards(bingo_boards)
+    numbers = get_numbers(bingo_numbers)
+
+    last_winning_board, last_winning_number = let_the_squid_winn(boards, numbers)
+    last_index = last_winning_board-1
+    last_score = calculate_winning_score(boards[last_index], 24)
+
+    return last_score
+
 
 def main():
     bingo_numbers = []
@@ -105,6 +145,7 @@ def main():
     f.close()
 
     print("part 1 - bingo score:", adv4_1(bingo_numbers, boards_data))
+    print("part 2 - last board score:", adv4_2(boards_data, bingo_numbers))
 
 
 if __name__ == '__main__':
