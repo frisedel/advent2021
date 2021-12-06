@@ -47,8 +47,9 @@ def count_dangerous_vents():
     pass
 
 def adv5_1(vent_data: List[str]):
-    vent_map = [[0 for j in range(1000)] for i in range(1000)]
     horizontal, vertical = create_vent_lists(vent_data)
+    #find max value in lists and make matrix below only as big as needed
+    vent_map = [[0 for j in range(1000)] for i in range(1000)]
     #mark vents - mark_in_matrix(horizontal, vertical, vent_map) # hope this works with reference
     #count vents - danger = count_dangerous_vents(vent_map)
     #return vent value
