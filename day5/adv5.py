@@ -67,16 +67,29 @@ def get_matrix_size(vertical: List[List[Tuple[int, int]]], horizontal: List[List
 
 
 def mark_in_matrix(vertical: List[List[Tuple[int, int]]], horizontal: List[List[Tuple[int, int]]], vent_map: List[List[int]]):
-    #take two lists
-    #mark vertical vents by + 1 in cell
-    #mark horizontal vents the same way
-    pass
+    for points in vertical:
+        vertical_vent_length = points[1][1]-points[0][1]
+        x_value = points[0][0]
+        y_start = points[0][1]
+        for index in range(vertical_vent_length):
+            vent_map[x_value][y_start+index] += 1
+    for points in horizontal:
+        horizontal_vent_length = points[1][0]-points[0][0]
+        y_value = points[0][1]
+        x_start = [0][0]
+        for index in range(horizontal_vent_length):
+            vent_map[x_start+index][y_value] += 1
 
 
-def count_dangerous_vents():
-    #loop over matrix and count cells with value over 1
-    #increase a value for each. go => for i in range(1000) for j range in range(1000) and check
-    pass
+
+def count_dangerous_vents(vent_map: List[List[int]]):
+    number_dagerous_points = 0
+    for column in vent_map:
+        for value in column:
+            if value > 1:
+                number_dagerous_points += 1
+    print(number_dagerous_points)
+    return number_dagerous_points
 
 
 def adv5_1(vent_data: List[str]):
@@ -84,7 +97,7 @@ def adv5_1(vent_data: List[str]):
     matrix_size = get_matrix_size(vertical, horizontal)
     vent_map = [[0 for j in range(matrix_size)] for i in range(matrix_size)]
     mark_in_matrix(vertical, horizontal, vent_map) # hope this works with reference
-    #count vents - danger = count_dangerous_vents(vent_map)
+    danger = count_dangerous_vents(vent_map)
     #return vent value
     pass
 
