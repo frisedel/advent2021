@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from typing import List
+from typing import List, Tuple
 
-def adv2_1(path):
+def adv2_1(path: List[Tuple[str, int]]):
     depth = 0
     forward = 0
 
@@ -18,7 +18,7 @@ def adv2_1(path):
     return forward * depth
 
 
-def adv2_2(path):
+def adv2_2(path: List[Tuple[str, int]]):
     depth = 0
     forward = 0
     aim = 0
@@ -42,7 +42,7 @@ def main():
         lines = f.readlines()
     f.close()
 
-    path_commands: List[(str, int)] = []
+    path_commands: List[Tuple[str, int]] = []
     for line in lines:
         commands = line.split()
         path_commands.append((commands[0], int(commands[1])))

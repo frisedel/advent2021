@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-import pytest
-
 from day3.adv3 import adv3_1, convert_binary, get_gas_rating, get_rates, adv3_2, calc_common_bits
 
 diagnostic_codes = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"]

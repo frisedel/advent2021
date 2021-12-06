@@ -2,7 +2,7 @@
 
 from typing import List
 
-def a1_1(values: List[int]):
+def adv1_1(values: List[int]):
 
     single_number_increse = 0
     previous = values[0]
@@ -15,7 +15,7 @@ def a1_1(values: List[int]):
     return single_number_increse
 
 
-def a1_2(values: List[int]):
+def adv1_2(values: List[int]):
 
     def calc_block(start: int):
         return values[start] + values[start+1] + values[start+2]
@@ -41,8 +41,8 @@ def main():
     f.close()
     values = [int(i) for i in lines]
 
-    print("part 1: ", a1_1(values))
-    print("part 2: ", a1_2(values))
+    print("part 1 - sonar sweep measurements: ", adv1_1(values))
+    print("part 2 - three-measurement sliding window: ", adv1_2(values))
 
 if __name__ == '__main__':
     main()
