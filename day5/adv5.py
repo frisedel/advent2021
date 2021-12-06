@@ -17,11 +17,10 @@ def count_dangerous_vents():
     pass
 
 def adv5_1(vent_data):
-    #remove diagonals from data
     #create 1000*1000 matrix of 0
-    #get horizontal and vertical lists
-    #mark vents
-    #count vents
+    #remove diagonals from data and get horizontal and vertical lists- create_vent_lists()
+    #mark vents - mark_in_matrix()
+    #count vents - count_dangerous_vents()
     #return vent value
     pass
 
