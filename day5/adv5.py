@@ -13,18 +13,21 @@ def convert_to_tuples(vent_data: List[str]) -> List[List[Tuple[int, int]]]:
     return converted_list
 
 
-def remove_diagonals(vent_data: List[List[Tuple[int, int]]]) -> List[List[Tuple[int, int]]]:
+def separate_directions(vent_data: List[List[Tuple[int, int]]]) -> Tuple[List[List[Tuple[int, int]]], List[List[Tuple[int, int]]]]:
     straight_lines: List[List[Tuple[int, int]]] = []
+    diagonal_lines: List[List[Tuple[int, int]]] = []
     for vent_line in vent_data:
         if vent_line[0][0] == vent_line[1][0] or vent_line[0][1] == vent_line[1][1]:
             straight_lines.append(vent_line)
-    return straight_lines
+        else:
+            diagonal_lines.append(vent_line)
+    return straight_lines, diagonal_lines
 
 
-def split_list(vent_data: List[List[Tuple[int, int]]]):
-    vertical_lines = []
-    horizontal_lines = []
-    for line in vent_data:
+def split_straight(straight_lines: List[List[Tuple[int, int]]]):
+    vertical_lines: List[List[Tuple[int, int]]] = []
+    horizontal_lines: List[List[Tuple[int, int]]] = []
+    for line in straight_lines:
         if line[0][0] == line[1][0]:
             vertical_lines.append(line)
         else:
@@ -32,7 +35,22 @@ def split_list(vent_data: List[List[Tuple[int, int]]]):
     return (vertical_lines, horizontal_lines)
 
 
-def sort_lists(vertical: List[List[Tuple[int, int]]], horizontal: List[List[Tuple[int, int]]]):
+#def sort_diagonals
+
+
+def split_diagonal(diagonal_lines: List[List[Tuple[int, int]]]):
+    #this list needs to be sorted before this step
+    out: List[List[Tuple[int, int]]] = []
+    x_to_y: List[List[Tuple[int, int]]] = []
+    for line in diagonal_lines:
+        if line[0][0] < line[1][0] and line [0][1] < line[1][1]:
+            out.append(line)
+        else:
+            x_to_y.append(line)
+    return (out, x_to_y)
+
+
+def sort_stright_lists(vertical: List[List[Tuple[int, int]]], horizontal: List[List[Tuple[int, int]]]):
     for points in vertical:
         if points[0][1] > points[1][1]:
             points[0], points[1] = points[1], points[0]
@@ -43,9 +61,11 @@ def sort_lists(vertical: List[List[Tuple[int, int]]], horizontal: List[List[Tupl
 
 def create_vent_lists(vent_data: List[str]) -> Tuple[List[List[Tuple[int, int]]], List[List[Tuple[int, int]]]]:
     vent_data_tupels = convert_to_tuples(vent_data)
-    data_straight = remove_diagonals(vent_data_tupels)
-    vertical, horizontal = split_list(data_straight)
-    sort_lists(vertical, horizontal)
+    straight_lines, diagonal_lines = separate_directions(vent_data_tupels)
+    vertical, horizontal = split_straight(straight_lines)
+    #sort diagola lines, low x value first.
+    out, x_to_y = split_diagonal(diagonal_lines)
+    sort_stright_lists(vertical, horizontal)
     return (vertical, horizontal)
 
 
