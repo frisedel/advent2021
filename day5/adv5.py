@@ -22,14 +22,14 @@ def remove_diagonals(vent_data: List[List[Tuple[int, int]]]) -> List[List[Tuple[
 
 
 def split_list(vent_data: List[List[Tuple[int, int]]]):
-    vertical = []
-    horozontal = []
+    vertical_lines = []
+    horizontal_lines = []
     for line in vent_data:
         if line[0][0] == line[1][0]:
-            vertical.append(line)
+            vertical_lines.append(line)
         else:
-            horozontal.append(line)
-    return (vertical, horozontal)
+            horizontal_lines.append(line)
+    return (vertical_lines, horizontal_lines)
 
 
 def sort_lists(vertical: List[List[Tuple[int, int]]], horizontal: List[List[Tuple[int, int]]]):
@@ -39,7 +39,6 @@ def sort_lists(vertical: List[List[Tuple[int, int]]], horizontal: List[List[Tupl
     for points in horizontal:
         if points[0][0] > points[1][0]:
             points[0], points[1] = points[1], points[0]
-
 
 
 def create_vent_lists(vent_data: List[str]) -> Tuple[List[List[Tuple[int, int]]], List[List[Tuple[int, int]]]]:
@@ -63,23 +62,22 @@ def max_from_list(data: List[List[Tuple[int, int]]]):
 def get_matrix_size(vertical: List[List[Tuple[int, int]]], horizontal: List[List[Tuple[int, int]]]):
     max_vertical = max_from_list(vertical)
     max_horizontal = max_from_list(horizontal)
-    return max(max_vertical, max_horizontal)
+    return max(max_vertical, max_horizontal)+1
 
 
-def mark_in_matrix(vertical: List[List[Tuple[int, int]]], horizontal: List[List[Tuple[int, int]]], vent_map: List[List[int]]):
-    for points in vertical:
-        vertical_vent_length = points[1][1]-points[0][1]
-        x_value = points[0][0]
-        y_start = points[0][1]
+def mark_in_matrix(vertical_lines: List[List[Tuple[int, int]]], horizontal_lines: List[List[Tuple[int, int]]], vent_map: List[List[int]]):
+    for vertical_line in vertical_lines:
+        vertical_vent_length = vertical_line[1][1]-vertical_line[0][1] +1
+        x_value = vertical_line[0][0]
+        y_start = vertical_line[0][1]
         for index in range(vertical_vent_length):
-            vent_map[x_value][y_start+index] += 1
-    for points in horizontal:
-        horizontal_vent_length = points[1][0]-points[0][0]
-        y_value = points[0][1]
-        x_start = [0][0]
+            vent_map[y_start+index][x_value] += 1
+    for horizontal_line in horizontal_lines:
+        horizontal_vent_length = horizontal_line[1][0]-horizontal_line[0][0] +1
+        y_value = horizontal_line[0][1]
+        x_start = horizontal_line[0][0]
         for index in range(horizontal_vent_length):
-            vent_map[x_start+index][y_value] += 1
-
+            vent_map[y_value][x_start+index] += 1
 
 
 def count_dangerous_vents(vent_map: List[List[int]]):
@@ -88,29 +86,27 @@ def count_dangerous_vents(vent_map: List[List[int]]):
         for value in column:
             if value > 1:
                 number_dagerous_points += 1
-    print(number_dagerous_points)
     return number_dagerous_points
 
+
+def create_matrix(matrix_size: int):
+    return [[0 for j in range(matrix_size)] for i in range(matrix_size)]
 
 def adv5_1(vent_data: List[str]):
     vertical, horizontal= create_vent_lists(vent_data)
     matrix_size = get_matrix_size(vertical, horizontal)
-    vent_map = [[0 for j in range(matrix_size)] for i in range(matrix_size)]
-    mark_in_matrix(vertical, horizontal, vent_map) # hope this works with reference
-    danger = count_dangerous_vents(vent_map)
-    #return vent value
-    pass
+    vent_map = create_matrix(matrix_size)
+    mark_in_matrix(vertical, horizontal, vent_map)
+    return count_dangerous_vents(vent_map)
 
 
 def main():
-    #read alla lines
     vent_data = []
     with open("ventlines.txt") as f:
         vent_data = f.readlines()
     f.close
 
     print("part 1 - number of dangerous vents:", adv5_1(vent_data))
-    pass
 
 
 if __name__ == '__main__':
