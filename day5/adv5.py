@@ -100,11 +100,21 @@ def mark_straight_lines_in_matrix(vertical_lines: List[List[Tuple[int, int]]], h
 
 
 def mark_diagonal_lines_in_matrix(out: List[List[Tuple[int, int]]], x_to_y: List[List[Tuple[int, int]]], vent_map: List[List[int]]):
-    pass
+    for line in out:
+        line_length = line[1][0]-line[0][0]+1
+        out_x_start = line[0][0]
+        out_y_start = line[0][1]
+        for index in range(line_length):
+            vent_map[out_y_start+index][out_x_start+index] += 1
+    for line in x_to_y:
+        line_length = line[1][0]-line[0][0]+1
+        x_start = line[0][0]
+        y_start = line[0][1]
+        for index in range(line_length):
+            vent_map[y_start-index][x_start+index] += 1
 
 
 def count_dangerous_vents(vent_map: List[List[int]]):
-    print(vent_map)
     number_dagerous_points = 0
     for column in vent_map:
         for value in column:
@@ -124,8 +134,7 @@ def adv5_1(vertical: List[List[Tuple[int, int]]], horizontal: List[List[Tuple[in
 
 def adv5_2(out: List[List[Tuple[int, int]]], x_to_y: List[List[Tuple[int, int]]], vent_map: List[List[int]]):
     mark_diagonal_lines_in_matrix(out, x_to_y, vent_map)
-    #return count_dangerous_vents(vent_map)
-    pass
+    return count_dangerous_vents(vent_map)
 
 def main():
     vent_data = []
