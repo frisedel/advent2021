@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
 
-def main():
-    # data = []
-    # with open(".txt") as f:
+from typing import List
 
-    # f.close
+def main():
+    crab_data = []
+    with open("crabs.txt") as f:
+        data = f.read().strip()
+        crab_data = data.split(",")
+    f.close
+
+    crabs: List[int] = []
+    for crab in crab_data:
+        crabs.append(int(crab))
+
+    print(crabs)
 
     # print("part 1 - number of lanternfish after 80 days:", adv6_1(lanterns))
     # print("part 2 - number of lanternfish after 256 days:", adv6_2(lanterns))
