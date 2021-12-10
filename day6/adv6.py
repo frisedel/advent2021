@@ -1,41 +1,42 @@
 #!/usr/bin/env python3
 
-from typing import List
+from typing import Dict, List
 
-def clean_last_generation(lanterns: List[int], prev_gen: List[int]) -> List[int]:
-    cleaned: List[int] = []
-    for index in range(len(lanterns)):
-        if lanterns[index] == 7:
-            if prev_gen[index] == 8:
-                cleaned.append(7)
+def process_lantern_generations(lanterns_data: List[int], last_generation: int) -> Dict[int, int]:
+
+    lanterns = { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0 }
+
+    for lantern in lanterns_data:
+        lanterns[lantern] += 1
+
+    for index in range(last_generation):
+        new_lanterns = { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0 }
+        for lantern in lanterns:
+            if lantern == 0:
+                new_lanterns[6] = new_lanterns[6] + lanterns[0]
+                new_lanterns[8] = new_lanterns[8] + lanterns[0]
             else:
-                cleaned.append(0)
-        else:
-            cleaned.append(lanterns[index])
-    return cleaned
+                new_lanterns[lantern-1] = new_lanterns[lantern-1] + lanterns[lantern]
+        lanterns = new_lanterns
 
-def process_lantern_generations(lanterns: List[int], prev_gen: List[int], generation_cap: int, last_generation: int) -> List[int]:
-    if last_generation == generation_cap:
-        return clean_last_generation(lanterns, prev_gen)
+    return lanterns
 
-    old_lanterns: List[int] = []
-    new_lanterns: List[int] = []
 
+def count_lanterns(lanterns: Dict[int, int]) -> int:
+    amount = 0
     for lantern in lanterns:
-        if lantern == 0:
-            old_lanterns.append(6)
-            new_lanterns.append(8)
-        else:
-            old_lanterns.append(lantern-1)
-
-    all_lanterns = [*old_lanterns, *new_lanterns]
-    print(last_generation, len(all_lanterns))
-    return process_lantern_generations(all_lanterns, lanterns, generation_cap, last_generation+1)
+        amount += lanterns[lantern]
+    return amount
 
 
-def adv6_1(lanterns_numbers: List[int]):
-    lantern_generations = process_lantern_generations(lanterns_numbers, [], 80, 0)
-    return len(lantern_generations)
+def adv6_1(lanterns_data: List[int]) -> int:
+    lantern_generations = process_lantern_generations(lanterns_data, 80)
+    return count_lanterns(lantern_generations)
+
+
+def adv6_2(lanterns: List[int]) -> int:
+    lanterns = process_lantern_generations(lanterns, 256)
+    return count_lanterns(lanterns)
 
 
 def main():
@@ -49,8 +50,8 @@ def main():
     for fish in lantern_data:
         lanterns.append(int(fish))
 
-    print("part 1 - number of lanternfish:", adv6_1(lanterns))
-    #print("part 2 - :", adv6_2())
+    print("part 1 - number of lanternfish after 80 days:", adv6_1(lanterns))
+    print("part 2 - number of lanternfish after 256 days:", adv6_2(lanterns))
 
 if __name__ == '__main__':
     main()
