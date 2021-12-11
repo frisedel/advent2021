@@ -3,12 +3,9 @@
 from typing import Dict, List
 import sys
 
-def adv7_1(crabs_data: List[int]) -> int:
+def get_crab_map(crabs_data: List[int]) -> Dict[int, int]:
     crabs = crabs_data[:]
     crabs.sort()
-    crab_max = max(crabs)
-    crab_min = min(crabs)
-
     crabs_grouped: Dict[int, int] = {}
 
     for crab in crabs:
@@ -17,14 +14,25 @@ def adv7_1(crabs_data: List[int]) -> int:
         else:
             crabs_grouped[crab] += 1
 
+    return crabs_grouped
+
+
+def adv7_1(crabs_data: List[int]) -> int:
+    crabs_grouped = get_crab_map(crabs_data)
+    crab_max = max(crabs_data)
+    crab_min = min(crabs_data)
     min_fuel = sys.maxsize
+    for point in range(crab_min, crab_max+1):
+        total_fuel_to_point = 0
+        for crab in crabs_grouped:
+            dist = abs(crab - point)
+            number_of_crabs = crabs_grouped[crab]
+            crab_fuel = dist * number_of_crabs
+            total_fuel_to_point += crab_fuel
+        if total_fuel_to_point < min_fuel:
+            min_fuel = total_fuel_to_point
+    return min_fuel
 
-    # for i in range(crab_min, crab_max):
-    #     fuel_cost = 0
-    #     loop over every crab group in dict and calc the fuel from that position. muliply by amount for that group
-    #     for j in something
-
-    print(crabs_grouped)
 
 def main():
     crab_data = []
@@ -37,10 +45,7 @@ def main():
     for crab in crab_data:
         crabs.append(int(crab))
 
-    print(len(crabs))
-    print(max(crabs))
-
-    print("part 1 - crabs to converge at:", adv7_1(crabs))
+    print("part 1 - min fuel for crabs on linear consumption:", adv7_1(crabs))
     # print("part 2 - number of lanternfish after 256 days:", adv6_2(lanterns))
     pass
 
