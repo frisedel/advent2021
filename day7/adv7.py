@@ -67,7 +67,6 @@ def main():
 
     print("part 1 - min fuel for crabs on linear consumption:", adv7_1(crabs))
     print("part 2 - min fuel for crabs on increasing consumption:", adv7_2(crabs))
-    pass
 
 if __name__ == '__main__':
     main()
