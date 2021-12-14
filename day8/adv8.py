@@ -99,7 +99,7 @@ def decode_signals(signals: List[str]) -> Dict[int, str]:
 
 
 def get_line_value(signals: List[str], values: List[str]) -> int:
-    signal_map = decode_signal(signals)
+    signal_map = decode_signals(signals)
 
     line_value: List[int] = []
     for signal_value in values:

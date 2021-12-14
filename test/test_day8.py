@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from day8.adv8 import adv8_1, adv8_2, all_in_signal, count_numbers, decode_signal, find_numbers, get_line_value, sort_strings, split_data
+from day8.adv8 import adv8_1, adv8_2, all_in_signal, count_numbers, decode_signals, find_numbers, get_line_value, sort_strings, split_data
 
 segment_text = [
     "be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe",
@@ -55,7 +55,7 @@ def test_all_in():
     assert all_in_signal("acdfg", "bcdef") == False
 
 def test_decode_signal():
-    sig_map = decode_signal(one_segment_in_sorted)
+    sig_map = decode_signals(one_segment_in_sorted)
     assert sig_map == one_segment_mapped
 
 def test_line_val():
