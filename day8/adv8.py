@@ -54,7 +54,7 @@ def all_in_signal(small: str, large: str) -> bool:
             return False
     return True
 
-def decode_signal(signals: List[str]) -> Dict[int, str]:
+def decode_signals(signals: List[str]) -> Dict[int, str]:
     unknown_signals = signals[:]
     numbers_map: Dict[int, str] = {}
     for signal in signals:
