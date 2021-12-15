@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 def as_local_dict(long: int, value: int) -> Dict[str, int]:
     return {"long": long, "value": value}
@@ -68,21 +68,48 @@ def in_any_basin(point: Dict[str, int], basins: List[List[Dict[str, int]]]) -> b
             return False
 
 
+def point_exist(lat_long: Tuple[int, int], smoke_map: List[List[int]]) -> bool:
+    pass
+
+
 #def points_to_add - take point and mapp
+def points_to_add(point: Dict[str, int], smoke_map: List[List[int]]):
+    #   [.....]
+    #   [--a--]
+    #   [-cPd-]
+    #   [--b--]
+    #   [.....]
+
+    a = (point["lat"]-1, point["long"])
+    b = (point["lat"]+1, point["long"])
+    c = (point["lat"], point["long"]-1)
+    d = (point["lat"], point["long"]+1)
+
     # 1 see if the points around exists
     # 2 see if points not 9
     # 3 add point to list to return and set 'can_grow' to false
+    pass
 
 
 def calc_basin(point: Dict[str, int], smoke_map: List[List[int]]):
     # basin = [point] is a list of points, starts with the incomming point inside. maybe with bool 'can_grow' added to dict
+    start = {"lat": point["lat"], "long": point["long"], "value": point["value"], "can grow": True}
+    basin = [start]
     # bool growing is true
+    growing = True
     # while loop untill no more points to add
+    while growing:
         # growing is false
+        growing = False
         # loop over points in basin
+        for point in basin:
             # if point 'can_grow' true, calculate neighbouring points
+            new_points = []
+            if point["can grow"]:
+                new_points = points_to_add(point, smoke_map)
             # use func like 'points_to_add' for all points in basin
             # if points_to_add longer then 0 -> growing is true
+            pass
     pass
 
 
