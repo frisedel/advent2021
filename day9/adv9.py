@@ -56,16 +56,46 @@ def adv9_1(smoke_map: List[List[int]]) -> int:
     return total_risk
 
 
-def find_basin(low: Dict[str, int]):
+def in_any_basin(point: Dict[str, int], basins: List[List[Dict[str, int]]]) -> bool:
+    #loop over all basins and see if point inside it. need try/except for first go.
+    for basin in basins:
+        try:
+            for basin_point in basin:
+                if point["lat"] == basin_point["lat"] and point["long"] == basin_point["long"]:
+                    return True
+            return False
+        except:
+            return False
+
+
+#def points_to_add - take point and mapp
+    # 1 see if the points around exists
+    # 2 see if points not 9
+    # 3 add point to list to return and set 'can_grow' to false
+
+
+def calc_basin(point: Dict[str, int], smoke_map: List[List[int]]):
+    # basin = [point] is a list of points, starts with the incomming point inside. maybe with bool 'can_grow' added to dict
+    # bool growing is true
+    # while loop untill no more points to add
+        # growing is false
+        # loop over points in basin
+            # if point 'can_grow' true, calculate neighbouring points
+            # use func like 'points_to_add' for all points in basin
+            # if points_to_add longer then 0 -> growing is true
     pass
 
 
 def adv9_2(smoke_map: List[List[int]]) -> int:
     global_lows = find_global_lows(smoke_map)
-    basins = []
+    basins: List[List[Dict[str, int]]] = []
     for point in global_lows:
-        find_basin(point)
-    pass
+        if not in_any_basin(point, basins):
+            basins.append(calc_basin(point, smoke_map))
+    # find longest 3 basins, easy since it is lists
+    # multiply lengths
+    # return value
+    return 0
 
 
 def main():
@@ -78,7 +108,7 @@ def main():
     for line in input_data:
         smoke_map.append([int(i) for i in list(line.strip())])
 
-    print("part 1 - :", adv9_1(smoke_map))
+    print("part 1 - Total risk value:", adv9_1(smoke_map))
     print("part 2 - :", adv9_2(smoke_map))
 
 if __name__ == '__main__':
