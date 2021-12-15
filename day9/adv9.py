@@ -69,7 +69,9 @@ def in_any_basin(point: Dict[str, int], basins: List[List[Dict[str, int]]]) -> b
 
 
 def point_exist(lat_long: Tuple[int, int], smoke_map: List[List[int]]) -> bool:
-    pass
+    max_lat = len(smoke_map)-1
+    max_long = len(smoke_map[0])-1
+    return 0 <= lat_long[0] <= max_lat and 0 <= lat_long[1] <= max_long
 
 
 #def points_to_add - take point and mapp
@@ -85,32 +87,40 @@ def points_to_add(point: Dict[str, int], smoke_map: List[List[int]]):
     c = (point["lat"], point["long"]-1)
     d = (point["lat"], point["long"]+1)
 
+    points = []
+
+    if point_exist(a, smoke_map) and smoke_map[a[0]][a[1]] != 9:
+        points.append({"lat": a[0], "long": a[1], "value": smoke_map[a[0]][a[1]], "can grow": True})
+    if point_exist(b, smoke_map) and smoke_map[b[0]][b[1]] != 9:
+        points.append({"lat": b[0], "long": b[1], "value": smoke_map[b[0]][b[1]], "can grow": True})
+    if point_exist(c, smoke_map) and smoke_map[c[0]][c[1]] != 9:
+        points.append({"lat": c[0], "long": c[1], "value": smoke_map[c[0]][c[1]], "can grow": True})
+    if point_exist(d, smoke_map) and smoke_map[d[0]][d[1]] != 9:
+        points.append({"lat": d[0], "long": d[1], "value": smoke_map[d[0]][d[1]], "can grow": True})
     # 1 see if the points around exists
     # 2 see if points not 9
     # 3 add point to list to return and set 'can_grow' to false
-    pass
+    return points
 
 
 def calc_basin(point: Dict[str, int], smoke_map: List[List[int]]):
-    # basin = [point] is a list of points, starts with the incomming point inside. maybe with bool 'can_grow' added to dict
+    print("calc basin")
     start = {"lat": point["lat"], "long": point["long"], "value": point["value"], "can grow": True}
     basin = [start]
-    # bool growing is true
+
     growing = True
-    # while loop untill no more points to add
     while growing:
-        # growing is false
         growing = False
-        # loop over points in basin
         for point in basin:
-            # if point 'can_grow' true, calculate neighbouring points
+            print(point)
             new_points = []
-            if point["can grow"]:
+            if point["can grow"] and not in_any_basin(point, [basin]):
                 new_points = points_to_add(point, smoke_map)
-            # use func like 'points_to_add' for all points in basin
-            # if points_to_add longer then 0 -> growing is true
-            pass
-    pass
+                point["can grow"] = False
+            if len(new_points) > 0:
+                growing = True
+            basin = basin + new_points
+    return basin
 
 
 def adv9_2(smoke_map: List[List[int]]) -> int:
