@@ -110,8 +110,8 @@ def calc_basin(basin: List[Dict[str, int]], smoke_map: List[List[int]]) -> List[
     if len(new_points) == 0:
         return basin
     else:
-        next_basin = [*basin, *new_points]
-        return calc_basin(next_basin, smoke_map)
+        growing_basin = [*basin, *new_points]
+        return calc_basin(growing_basin, smoke_map)
 
 
 def adv9_2(smoke_map: List[List[int]]) -> int:
@@ -123,21 +123,9 @@ def adv9_2(smoke_map: List[List[int]]) -> int:
             basin = calc_basin([point], smoke_map)
             basins.append(basin)
 
-    first = 0
-    second = 0
-    third = 0
-    for basin in basins:
-        if len(basin) > first:
-            third = second
-            second = first
-            first = len(basin)
-        elif len(basin) > second:
-            third = second
-            second = len(basin)
-        elif len(basin) > third:
-            third = len(basin)
+    third, second, first = tuple(sorted(basins, key=len)[-3:])
 
-    return first * second * third
+    return len(first) * len(second) * len(third)
 
 
 def main():
@@ -151,7 +139,7 @@ def main():
         smoke_map.append([int(i) for i in list(line.strip())])
 
     print("part 1 - Total risk value:", adv9_1(smoke_map))
-    print("part 2 - :", adv9_2(smoke_map))
+    print("part 2 - Value for three largest basins:", adv9_2(smoke_map))
 
 if __name__ == '__main__':
     main()
