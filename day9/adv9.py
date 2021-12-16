@@ -57,7 +57,6 @@ def adv9_1(smoke_map: List[List[int]]) -> int:
 
 
 def in_any_basin(point: Dict[str, int], basins: List[List[Dict[str, int]]]) -> bool:
-    #loop over all basins and see if point inside it. need try/except for first go.
     for basin in basins:
         try:
             for basin_point in basin:
@@ -74,8 +73,7 @@ def point_exist(lat_long: Tuple[int, int], smoke_map: List[List[int]]) -> bool:
     return 0 <= lat_long[0] <= max_lat and 0 <= lat_long[1] <= max_long
 
 
-#def points_to_add - take point and mapp
-def points_to_add(point: Dict[str, int], smoke_map: List[List[int]]):
+def points_to_add(point: Dict[str, int], smoke_map: List[List[int]], basin: List[Dict[str, int]]):
     #   [.....]
     #   [--a--]
     #   [-cPd-]
@@ -87,40 +85,51 @@ def points_to_add(point: Dict[str, int], smoke_map: List[List[int]]):
     c = (point["lat"], point["long"]-1)
     d = (point["lat"], point["long"]+1)
 
-    points = []
+    points: List[Dict[str, int]] = []
 
-    if point_exist(a, smoke_map) and smoke_map[a[0]][a[1]] != 9:
+    if point_exist(a, smoke_map) and smoke_map[a[0]][a[1]] != 9 and not in_any_basin({"lat": a[0], "long": a[1], "value": smoke_map[a[0]][a[1]]}, [basin]):
         points.append({"lat": a[0], "long": a[1], "value": smoke_map[a[0]][a[1]], "can grow": True})
-    if point_exist(b, smoke_map) and smoke_map[b[0]][b[1]] != 9:
+    if point_exist(b, smoke_map) and smoke_map[b[0]][b[1]] != 9 and not in_any_basin({"lat": b[0], "long": b[1], "value": smoke_map[b[0]][b[1]]}, [basin]):
         points.append({"lat": b[0], "long": b[1], "value": smoke_map[b[0]][b[1]], "can grow": True})
-    if point_exist(c, smoke_map) and smoke_map[c[0]][c[1]] != 9:
+    if point_exist(c, smoke_map) and smoke_map[c[0]][c[1]] != 9 and not in_any_basin({"lat": c[0], "long": c[1], "value": smoke_map[c[0]][c[1]]}, [basin]):
         points.append({"lat": c[0], "long": c[1], "value": smoke_map[c[0]][c[1]], "can grow": True})
-    if point_exist(d, smoke_map) and smoke_map[d[0]][d[1]] != 9:
+    if point_exist(d, smoke_map) and smoke_map[d[0]][d[1]] != 9 and not in_any_basin({"lat": d[0], "long": d[1], "value": smoke_map[d[0]][d[1]]}, [basin]):
         points.append({"lat": d[0], "long": d[1], "value": smoke_map[d[0]][d[1]], "can grow": True})
-    # 1 see if the points around exists
-    # 2 see if points not 9
-    # 3 add point to list to return and set 'can_grow' to false
+
     return points
 
 
 def calc_basin(point: Dict[str, int], smoke_map: List[List[int]]):
-    print("calc basin")
-    start = {"lat": point["lat"], "long": point["long"], "value": point["value"], "can grow": True}
-    basin = [start]
-
+    basin = [point]
     growing = True
     while growing:
         growing = False
         for point in basin:
-            print(point)
             new_points = []
-            if point["can grow"] and not in_any_basin(point, [basin]):
-                new_points = points_to_add(point, smoke_map)
-                point["can grow"] = False
+            if point["can grow"]:
+                neighbours = points_to_add(point, smoke_map, basin)
+            for n in neighbours:
+                new_points.append(n)
+            point["can grow"] = False
             if len(new_points) > 0:
                 growing = True
             basin = basin + new_points
     return basin
+
+
+def c2(basin: List[Dict[str, int]], smoke_map: List[List[int]]) -> List[Dict[str, int]]:
+    new_points: List[Dict[str, int]] = []
+    for point in basin:
+        if point["can grow"]:
+            neighbours = points_to_add(point, smoke_map, basin)
+            for n in neighbours:
+                new_points.append(n)
+            point["can grow"] = False
+    if len(new_points) == 0:
+        return basin
+    else:
+        next_basin = [*basin, *new_points]
+        return c2(next_basin, smoke_map)
 
 
 def adv9_2(smoke_map: List[List[int]]) -> int:
@@ -128,11 +137,29 @@ def adv9_2(smoke_map: List[List[int]]) -> int:
     basins: List[List[Dict[str, int]]] = []
     for point in global_lows:
         if not in_any_basin(point, basins):
-            basins.append(calc_basin(point, smoke_map))
-    # find longest 3 basins, easy since it is lists
-    # multiply lengths
-    # return value
-    return 0
+            point["can grow"] = True
+            basin = c2([point], smoke_map)
+            basins.append(basin)
+
+    basins_cleaned = []
+    for basin in basins:
+        basins_cleaned.append([dict(t) for t in {tuple(d.items()) for d in basin}])
+
+    first = 0
+    second = 0
+    third = 0
+    for basin in basins_cleaned:
+        if len(basin) > first:
+            third = second
+            second = first
+            first = len(basin)
+        elif len(basin) > second:
+            third = second
+            second = len(basin)
+        elif len(basin) > third:
+            third = len(basin)
+
+    return first * second * third
 
 
 def main():
@@ -150,14 +177,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-"""
-    === for first part ===
-    1. read input
-    2. convert to list of int
-    3 loop over rows. if local low, take index and check above and below
-    4. add low points to list
-    5. calculate risk for points
-    6. sum the risks
-    7. return value
-"""

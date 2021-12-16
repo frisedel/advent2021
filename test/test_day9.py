@@ -1,4 +1,4 @@
-from day9.adv9 import adv9_1
+from day9.adv9 import adv9_1, adv9_2
 
 test_map = [
     [2, 1, 9, 9, 9, 4, 3, 2, 1 ,0],
@@ -11,3 +11,7 @@ test_map = [
 def test_adv9_1():
     risk = adv9_1(test_map)
     assert risk == 15
+
+def test_adv9_2():
+    value = adv9_2(test_map)
+    assert value == 1134
