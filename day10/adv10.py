@@ -2,28 +2,25 @@
 
 from typing import List
 
-opening_chars = ['(', '[', '{', '<']
-closing_chars = [')', ']', '}', '>']
+open_close = {'(': ')', '[': ']', '{': '}', '<': '>'}
 
 def find_closing(syntax_index: int, syntax_line: List[str]):
     depth = 0
-
-    char = syntax_line[syntax_index]
-
-    for next_char in range(syntax_index+1, len(syntax_line)):
-        if syntax_line[next_char] in opening_chars:
+    for next_char in range(syntax_index, len(syntax_line)):
+        if syntax_line[next_char] in open_close.keys():
             depth += 1
         else:
             depth -= 1
-            if depth == 0 and opening_chars.index(char) == closing_chars.index(syntax_line[next_char]):
+            if depth == 0:
                 return syntax_line[next_char]
 
 
 def find_error(syntax_line: List[str]) -> str:
-    for index in range(len(syntax_line)-1):
-        if syntax_line[index] in opening_chars:
+    for index in range(len(syntax_line)):
+        if syntax_line[index] in open_close.keys():
+            opening = syntax_line[index]
             closing = find_closing(index, syntax_line)
-            if closing != None:
+            if closing != None and open_close[opening] != closing:
                 return closing
     return '-'
 
@@ -44,8 +41,10 @@ def adv10_1(syntax_data: List[List[str]]):
             total += 25137
     return total
 
-def adv10_2():
+
+def adv10_2(syntax_data: List[List[str]]):
     pass
+
 
 def main():
     input_data = []
@@ -58,7 +57,7 @@ def main():
         syntax_data.append(list(line.strip()))
 
     print("part 1 - Total syntax error score:", adv10_1(syntax_data))
-    print("part 2 - :", adv10_2())
+    print("part 2 - :", adv10_2(syntax_data))
 
 if __name__ == '__main__':
     main()
