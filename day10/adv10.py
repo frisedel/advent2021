@@ -43,6 +43,13 @@ def adv10_1(syntax_data: List[List[str]]):
 
 
 def adv10_2(syntax_data: List[List[str]]):
+    local_syntax = syntax_data[:]
+    for line in local_syntax:
+        # filter the local, remove any line where error is found '-' is returned if no error
+        pass
+    # for line in local:
+        # loop over again and where closing is None, insert what was expected
+    # calculate score
     pass
 
 
