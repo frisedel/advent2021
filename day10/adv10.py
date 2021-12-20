@@ -43,14 +43,15 @@ def adv10_1(syntax_data: List[List[str]]):
 
 
 def adv10_2(syntax_data: List[List[str]]):
-    local_syntax = syntax_data[:]
-    for line in local_syntax:
-        # filter the local, remove any line where error is found '-' is returned if no error
-        pass
-    # for line in local:
-        # loop over again and where closing is None, insert what was expected
+    incomplete_syntax: List[List[str]] = []
+    for line in syntax_data:
+        error = find_error(line)
+        if error == '-':
+            incomplete_syntax.append(line)
+
+    # for line in incomplete_syntax:
+    #     loop over again and where closing is None, insert what was expected
     # calculate score
-    pass
 
 
 def main():

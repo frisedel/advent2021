@@ -1,4 +1,4 @@
-from day10.adv10 import adv10_1, find_closing, find_error
+from day10.adv10 import adv10_1, adv10_2, find_closing, find_error
 
 syntax_test = [
     ['[', '(', '{', '(', '<', '(', '(', ')', ')', '[', ']', '>', '[', '[', '{', '[', ']', '{', '<', '(', ')', '<', '>', '>'],
@@ -30,3 +30,7 @@ def test_find_error():
 def test_adv10_1():
     val = adv10_1(syntax_test)
     assert val == 26397
+
+def test_adv10_2():
+    score = adv10_2(syntax_test)
+    assert score == 288957
