@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 def create_grid(octopus_data: List[List[int]]) -> List[List[Dict[str, int]]]:
     oct_grid: List[List[Dict[str, int]]] = []
@@ -18,32 +18,74 @@ def create_grid(octopus_data: List[List[int]]) -> List[List[Dict[str, int]]]:
     when list is empty go top next step in outer loop
 """
 
-def process_iteration(octopus_grid: List[List[Dict[str, int]]], to_blink: List[Dict[str, int]], iteration: int, ):
-    pass
+def point_exist(x_y: Tuple[int, int], octopus_grid: List[List[Dict[str, int]]]) -> bool:
+    max_x = len(octopus_grid)-1
+    max_y = len(octopus_grid[0])-1
+    return 0 <= x_y[0] <= max_x and 0 <= x_y[1] <= max_y
 
 
-def count_blinks(octopus_grid: List[List[Dict[str, int]]], iterations):
+def energy_spread(octopus_grid: List[List[Dict[str, int]]], iteration: int, octopus: Dict[str, int]):
+    #   [.....]
+    #   [-abc-]
+    #   [-dXe-]
+    #   [-fgh-]
+    #   [.....]
+
+    a = (octopus["x"]-1, octopus["y"]-1)
+    b = (octopus["x"], octopus["y"]-1)
+    c = (octopus["x"]+1, octopus["y"]-1)
+    d = (octopus["x"]-1, octopus["y"])
+    e = (octopus["x"]+1, octopus["y"])
+    f = (octopus["x"]-1, octopus["y"]+1)
+    g = (octopus["x"], octopus["y"]+1)
+    h = (octopus["x"]+1, octopus["y"]+1)
+
+    to_flas_next = []
+    if point_exist(a, octopus_grid):
+        oct_a = octopus_grid[a[0]][a[1]]
+        oct_a["value"] += 1
+        if oct_a["value"] > 9:
+            oct_a["flash num"] += 1
+            oct_a["last flash"] = iteration
+            oct_a["value"] = 0
+            to_flas_next.append(oct_a)
+    #if b-h
+    return to_flas_next
+
+def process_iteration(octopus_grid: List[List[Dict[str, int]]], iteration: int, to_flash: List[Dict[str, int]]):
+    for_next = []
+    for octopus in to_flash:
+        to_flash_next = energy_spread(octopus_grid, iteration, octopus)
+        print(to_flash_next)
+        for tfn in to_flash_next:
+            for_next.append(tfn)
+    if len(for_next) == 0:
+        return None
+    else:
+        return process_iteration(octopus_grid, iteration, for_next)
+
+
+def observe_flashes(octopus_grid: List[List[Dict[str, int]]], iterations):
     for iteration in range(iterations):
-        # to_blink: List[Dict[str, int]] = []
-        # all octopuses +1 to count, if it goes to 10, set to 0 and add to to_blink
-        # process_iteration(octopus_grid, to_blink, iteration)
-        pass
-    total = 0
-    # count blinks in all octopuses
-    return total
+        to_flash: List[Dict[str, int]] = []
+        for line in octopus_grid:
+            for octopus in line:
+                octopus["value"] += 1
+                if octopus["value"] > 9:
+                    octopus["flash num"] += 1
+                    octopus["last flash"] = iteration
+                    octopus["value"] = 0
+                    to_flash.append(octopus)
+        process_iteration(octopus_grid, iteration, to_flash)
 
 
 def adv11_1(octopus_data: List[List[int]]):
     octopus_grid = create_grid(octopus_data)
-    number_blinks = count_blinks(octopus_grid, 100)
+    observe_flashes(octopus_grid, 100)
+    print(octopus_grid)
+    number_of_flashes = 0
 
-    """
-        1. iterate over grid adding 1 untill above 9. ie when 10 set to 0
-        2. make turning at 10 add 1 to all adjacent octopuses. use logic from day 9 but add diagonals as well
-            a flash turns octopus to 0, but can be counted up again by neighbours the same round
-            next iteration does not mean it is 0 then
-    """
-    return number_blinks
+    return number_of_flashes
 
 
 def adv11_2():
