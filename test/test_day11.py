@@ -21,8 +21,8 @@ test_grid_small = [
 def test_make_grid():
     small_grid = create_grid(test_grid_small)
     assert small_grid == [
-        [{"value": 1, "last flash": 0, "flash num": 0}, {"value": 2, "last flash": 0, "flash num": 0}],
-        [{"value": 3, "last flash": 0, "flash num": 0}, {"value": 4, "last flash": 0, "flash num": 0}]
+        [{"x": 0, "y": 0, "value": 1, "last flash": 0, "flash num": 0}, {"x": 0, "y": 1, "value": 2, "last flash": 0, "flash num": 0}],
+        [{"x": 1, "y": 0, "value": 3, "last flash": 0, "flash num": 0}, {"x": 1, "y": 1, "value": 4, "last flash": 0, "flash num": 0}]
     ]
 
 # def test_adv11_1():
