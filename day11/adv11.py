@@ -12,16 +12,23 @@ def create_grid(octopus_data: List[List[int]]) -> List[List[Dict[str, int]]]:
     return oct_grid
 
 
-"""
-    func to recursively handle the iteration, or a while loop
-    take grid, iteration number and a list of octopuses to process
-    when list is empty go top next step in outer loop
-"""
-
 def point_exist(x_y: Tuple[int, int], octopus_grid: List[List[Dict[str, int]]]) -> bool:
     max_x = len(octopus_grid)-1
     max_y = len(octopus_grid[0])-1
     return 0 <= x_y[0] <= max_x and 0 <= x_y[1] <= max_y
+
+
+def handle_octopus(oct: Tuple[int, int], octopus_grid: List[List[Dict[str, int]]], iteration: int):
+    if point_exist(oct, octopus_grid):
+        octopus = octopus_grid[oct[0]][oct[1]]
+        if octopus["value"] > 0:
+            octopus["value"] += 1
+            if octopus["value"] > 9:
+                octopus["flash num"] += 1
+                octopus["last flash"] = iteration
+                octopus["value"] = 0
+                return octopus
+    return None
 
 
 def energy_spread(octopus_grid: List[List[Dict[str, int]]], iteration: int, octopus: Dict[str, int]):
@@ -41,22 +48,21 @@ def energy_spread(octopus_grid: List[List[Dict[str, int]]], iteration: int, octo
     h = (octopus["x"]+1, octopus["y"]+1)
 
     to_flas_next = []
-    if point_exist(a, octopus_grid):
-        oct_a = octopus_grid[a[0]][a[1]]
-        oct_a["value"] += 1
-        if oct_a["value"] > 9:
-            oct_a["flash num"] += 1
-            oct_a["last flash"] = iteration
-            oct_a["value"] = 0
-            to_flas_next.append(oct_a)
-    #if b-h
-    return to_flas_next
+    to_flas_next.append(handle_octopus(a, octopus_grid, iteration))
+    to_flas_next.append(handle_octopus(b, octopus_grid, iteration))
+    to_flas_next.append(handle_octopus(c, octopus_grid, iteration))
+    to_flas_next.append(handle_octopus(d, octopus_grid, iteration))
+    to_flas_next.append(handle_octopus(e, octopus_grid, iteration))
+    to_flas_next.append(handle_octopus(f, octopus_grid, iteration))
+    to_flas_next.append(handle_octopus(g, octopus_grid, iteration))
+    to_flas_next.append(handle_octopus(h, octopus_grid, iteration))
+
+    return list(filter(None.__ne__, to_flas_next))
 
 def process_iteration(octopus_grid: List[List[Dict[str, int]]], iteration: int, to_flash: List[Dict[str, int]]):
     for_next = []
     for octopus in to_flash:
         to_flash_next = energy_spread(octopus_grid, iteration, octopus)
-        print(to_flash_next)
         for tfn in to_flash_next:
             for_next.append(tfn)
     if len(for_next) == 0:
@@ -82,13 +88,18 @@ def observe_flashes(octopus_grid: List[List[Dict[str, int]]], iterations):
 def adv11_1(octopus_data: List[List[int]]):
     octopus_grid = create_grid(octopus_data)
     observe_flashes(octopus_grid, 100)
-    print(octopus_grid)
     number_of_flashes = 0
-
+    for line in octopus_grid:
+        for octopus in line:
+            number_of_flashes += octopus["flash num"]
     return number_of_flashes
 
 
 def adv11_2():
+    synchronized = False
+    iteration = 0
+    while not synchronized:
+        pass
     pass
 
 

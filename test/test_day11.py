@@ -25,6 +25,6 @@ def test_make_grid():
         [{"x": 1, "y": 0, "value": 3, "last flash": 0, "flash num": 0}, {"x": 1, "y": 1, "value": 4, "last flash": 0, "flash num": 0}]
     ]
 
-# def test_adv11_1():
-#     flashes = adv11_1(test_grid)
-#     assert flashes == 1656
+def test_adv11_1():
+    flashes = adv11_1(test_grid)
+    assert flashes == 1656
