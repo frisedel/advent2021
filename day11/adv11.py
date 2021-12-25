@@ -59,6 +59,7 @@ def energy_spread(octopus_grid: List[List[Dict[str, int]]], iteration: int, octo
 
     return list(filter(None.__ne__, to_flas_next))
 
+
 def process_iteration(octopus_grid: List[List[Dict[str, int]]], iteration: int, to_flash: List[Dict[str, int]]):
     for_next = []
     for octopus in to_flash:
@@ -71,23 +72,23 @@ def process_iteration(octopus_grid: List[List[Dict[str, int]]], iteration: int, 
         return process_iteration(octopus_grid, iteration, for_next)
 
 
-def observe_flashes(octopus_grid: List[List[Dict[str, int]]], iterations):
-    for iteration in range(iterations):
-        to_flash: List[Dict[str, int]] = []
-        for line in octopus_grid:
-            for octopus in line:
-                octopus["value"] += 1
-                if octopus["value"] > 9:
-                    octopus["flash num"] += 1
-                    octopus["last flash"] = iteration
-                    octopus["value"] = 0
-                    to_flash.append(octopus)
-        process_iteration(octopus_grid, iteration, to_flash)
+def observe_flashes(octopus_grid: List[List[Dict[str, int]]], iteration):
+    to_flash: List[Dict[str, int]] = []
+    for line in octopus_grid:
+        for octopus in line:
+            octopus["value"] += 1
+            if octopus["value"] > 9:
+                octopus["flash num"] += 1
+                octopus["last flash"] = iteration
+                octopus["value"] = 0
+                to_flash.append(octopus)
+    process_iteration(octopus_grid, iteration, to_flash)
 
 
 def adv11_1(octopus_data: List[List[int]]):
     octopus_grid = create_grid(octopus_data)
-    observe_flashes(octopus_grid, 100)
+    for iteration in range(100):
+        observe_flashes(octopus_grid, iteration)
     number_of_flashes = 0
     for line in octopus_grid:
         for octopus in line:
@@ -95,12 +96,24 @@ def adv11_1(octopus_data: List[List[int]]):
     return number_of_flashes
 
 
-def adv11_2():
+def grid_syncronized(octopus_grid: List[List[Dict[str, int]]], iteration: int):
+    for line in octopus_grid:
+        for octopus in line:
+            if octopus["last flash"] != iteration:
+                return False
+    return True
+
+
+def adv11_2(octopus_data: List[List[int]]):
+    octopus_grid = create_grid(octopus_data)
     synchronized = False
-    iteration = 0
+    iterations = 0
     while not synchronized:
-        pass
-    pass
+        iterations += 1
+        observe_flashes(octopus_grid, iterations)
+        if grid_syncronized(octopus_grid, iterations):
+            synchronized = True
+    return iterations
 
 
 def main():
@@ -113,8 +126,8 @@ def main():
     for line in data:
         octopus_data.append([int(i) for i in list(line.strip())])
 
-    print("part 1 - :", adv11_1(octopus_data))
-    print("part 2 - :", adv11_2())
+    print("part 1 - Number of flashes after 100 iterations:", adv11_1(octopus_data))
+    print("part 2 - Iteration when octopuses syncronize for the first time:", adv11_2(octopus_data))
 
 if __name__ == '__main__':
     main()
