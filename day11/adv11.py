@@ -31,7 +31,7 @@ def handle_octopus(oct: Tuple[int, int], octopus_grid: List[List[Dict[str, int]]
     return None
 
 
-def energy_spread(octopus_grid: List[List[Dict[str, int]]], iteration: int, octopus: Dict[str, int]):
+def energy_spread(octopus_grid: List[List[Dict[str, int]]], iteration: int, octopus: Dict[str, int]) -> List[Dict[str, int]]:
     #   [.....]
     #   [-abc-]
     #   [-dXe-]
@@ -61,7 +61,7 @@ def energy_spread(octopus_grid: List[List[Dict[str, int]]], iteration: int, octo
 
 
 def process_iteration(octopus_grid: List[List[Dict[str, int]]], iteration: int, to_flash: List[Dict[str, int]]):
-    for_next = []
+    for_next: List[Dict[str, int]] = []
     for octopus in to_flash:
         to_flash_next = energy_spread(octopus_grid, iteration, octopus)
         for tfn in to_flash_next:
