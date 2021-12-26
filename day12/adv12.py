@@ -13,7 +13,7 @@ def adv12_2(tree_graph: Dict[str, List[str]]):
 
 
 def trim_tree(tree_graph: Dict[str, List[str]]):
-    to_remove = []
+    to_remove: List[str] = []
     for node in tree_graph:
         if len(tree_graph[node]) == 0:
             to_remove.append(node)
@@ -21,6 +21,9 @@ def trim_tree(tree_graph: Dict[str, List[str]]):
             to_remove.append(node)
     for dead_end in to_remove:
         del tree_graph[dead_end]
+        for node in tree_graph:
+            if dead_end in tree_graph[node]:
+                tree_graph[node].remove(dead_end)
 
 def main():
     data = []
