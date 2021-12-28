@@ -1,5 +1,5 @@
 from copy import deepcopy
-from day12.adv12 import adv12_1, navigate_caves, trim_graph
+from day12.adv12 import adv12_1, adv12_2, navigate_caves, trim_graph
 
 test_caves_small = {'start': ['A', 'b'], 'A': ['start', 'b', 'c', 'end'], 'b': ['start', 'A', 'd', 'end'], 'c': ['A'], 'd': ['b']}
 test_caves_small_trimmed = {'start': ['A', 'b'], 'A': ['start', 'b', 'c', 'end'], 'b': ['start', 'A', 'end'], 'c': ['A']}
@@ -31,3 +31,6 @@ def test_adv12_1():
     number_of_paths = adv12_1(test_caves_small_trimmed)
     assert number_of_paths == len(test_paths_small)
 
+def test_adv12_2():
+    number_of_paths = adv12_2(test_caves_small_trimmed)
+    assert number_of_paths == 36
