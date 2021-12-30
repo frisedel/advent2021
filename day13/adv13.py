@@ -76,10 +76,8 @@ def construct_paper(coordinates: List[Tuple[int, int]]) -> List[List[int]]:
     x_max = 0
     y_max = 0
     for coord in coordinates:
-        if coord[0] > x_max:
-            x_max = coord[0]
-        if coord[1] > y_max:
-            y_max = coord[1]
+        x_max = max(x_max, coord[0])
+        y_max = max(y_max, coord[1])
 
     paper = [[0 for x in range(x_max+1)] for y in range(y_max+1)]
 
