@@ -7,7 +7,7 @@ def fold_paper(paper: List[List[int]], fold: Tuple[str, int]):
     if fold[0] == 'x':
         return fold_x(paper, fold[1])
     else:
-        return fold_y(paper, fold)
+        return fold_y(paper, fold[1])
 
 def fold_x(paper: List[List[int]], fold_at: int):
     folded_paper: List[List[int]] = []
@@ -22,7 +22,22 @@ def fold_x(paper: List[List[int]], fold_at: int):
 
 
 def fold_y(paper: List[List[int]], fold_at: int):
-    pass
+    folded_paper: List[List[int]] = []
+    first = paper[:fold_at]
+    first.reverse()
+    second = paper[fold_at+1:]
+
+    long = first if len(first) >= len(second) else second
+    short = second if len (first) >= len(second) else first
+
+    for index in range(len(long)):
+        try:
+            new = list(map(sum, zip(long[index], short[index])))
+            folded_paper.append(new)
+        except:
+            folded_paper.append(long[index])
+    folded_paper.reverse()
+    return folded_paper
 
 
 def count_dots(paper: List[List[int]]) -> int:
@@ -37,9 +52,21 @@ def adv13_1(paper: List[List[int]], folds: List[Tuple[str, int]]):
     return count_dots(folded_paper)
 
 
-def adv13_2():
-    pass
+def adv13_2(paper: List[List[int]], folds: List[Tuple[str, int]]) -> List[List[int]]:
+    folded_paper = paper[:]
+    for fold in folds:
+        folded_paper = fold_paper(folded_paper, fold)
 
+    text_output = '\n'
+    for line in folded_paper:
+        new_line = ''
+        for val in line:
+            if val > 0:
+                new_line += '# '
+            else:
+                new_line += '. '
+        text_output += (new_line + '\n')
+    return text_output
 
 def construct_coordinates(paper_data: List[str]):
     return list(map(eval, paper_data))
@@ -87,7 +114,7 @@ def main():
     folds = extraxt_folds(folding_data)
 
     print("part 1 - Number of visible dots after first fold:", adv13_1(paper, folds))
-    print("part 2 - :", adv13_2())
+    print("part 2 - Activation code for infrared thermal imaging camera system:", adv13_2(paper, folds))
 
 if __name__ == '__main__':
     main()
