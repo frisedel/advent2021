@@ -52,7 +52,7 @@ def adv13_1(paper: List[List[int]], folds: List[Tuple[str, int]]):
     return count_dots(folded_paper)
 
 
-def adv13_2(paper: List[List[int]], folds: List[Tuple[str, int]]) -> List[List[int]]:
+def adv13_2(paper: List[List[int]], folds: List[Tuple[str, int]]) -> str:
     folded_paper = paper[:]
     for fold in folds:
         folded_paper = fold_paper(folded_paper, fold)
