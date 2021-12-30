@@ -68,6 +68,7 @@ def adv13_2(paper: List[List[int]], folds: List[Tuple[str, int]]) -> str:
         text_output += (new_line + '\n')
     return text_output
 
+
 def construct_coordinates(paper_data: List[str]):
     return list(map(eval, paper_data))
 
