@@ -43,8 +43,30 @@ def adv14_1(polymer_template: str, polymer_extentions: Dict[str, str]) -> int:
     return get_polymer_diff(polymer_template, polymer_extentions, 10)
 
 
+def p2(polymer_template: str, polymer_extentions: Dict[str, str]) -> int:
+    polymer_pairs: Dict[str, int] = {}
+    for pair in zip(polymer_template, polymer_template[1:]):
+        pair_str = ''.join(pair)
+        polymer_pairs[pair_str] = 1
+
+    for i in range(40):
+        temp_pairs: Dict[str, int] = {}
+        for pair in polymer_pairs:
+            if polymer_pairs[pair] > 0:
+                count = polymer_pairs[pair]
+                polymer_pairs[pair] = 0
+                extend = polymer_extentions[pair]
+                if extend not in temp_pairs.keys():
+                    temp_pairs[extend] = count
+                else:
+                    temp_pairs[extend] += count
+        polymer_pairs = temp_pairs
+    print(polymer_pairs)
+
 def adv14_2(polymer_template: str, polymer_extentions: Dict[str, str]) -> int:
-    return get_polymer_diff(polymer_template, polymer_extentions, 40)
+    # return get_polymer_diff(polymer_template, polymer_extentions, 40)
+    return p2(polymer_template, polymer_extentions)
+
 
 
 def construct_polymer_extentions(polymer_data: List[str]) -> Dict[str, str]:
