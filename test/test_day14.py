@@ -1,4 +1,4 @@
-from day14.adv14 import adv14_1, construct_polymer_extentions, extend_polymer, get_element_comp, get_maxmin
+from day14.adv14 import adv14_1, adv14_2, construct_polymer_extentions, extend_polymer, get_element_comp, get_maxmin
 
 test_template = 'NNCB'
 test_polymer_1 = 'NCNBCHB'
@@ -48,3 +48,7 @@ def test_get_maxmin():
 def test_adv14_1():
     element_value = adv14_1(test_template, test_polymer_map)
     assert element_value == 1588
+
+def test_adv14_2():
+    element_value = adv14_2(test_template, test_polymer_map)
+    assert element_value == 2188189693529
