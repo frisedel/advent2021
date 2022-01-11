@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import sys
-from typing import Dict, List, Tuple
+from typing import Counter, Dict, List, Tuple
+from copy import deepcopy
 
 def extend_polymer(polymer: str, polymer_extention: Dict[str, str]) -> str:
     extended = ''
@@ -43,29 +44,46 @@ def adv14_1(polymer_template: str, polymer_extentions: Dict[str, str]) -> int:
     return get_polymer_diff(polymer_template, polymer_extentions, 10)
 
 
-def p2(polymer_template: str, polymer_extentions: Dict[str, str]) -> int:
-    polymer_pairs: Dict[str, int] = {}
-    for pair in zip(polymer_template, polymer_template[1:]):
-        pair_str = ''.join(pair)
-        polymer_pairs[pair_str] = 1
+def p2(pairs: Dict[str, int], polymer_extentions: Dict[str, str]) -> int:
+    polymer = pairs
+    for i in range(40 + 1):
+        new_pairs = Counter()
+        for pair in polymer:
+            extend = polymer_extentions[pair]
+            first_pair = pair[0] + extend
+            second_pair = extend + pair[1]
+            new_pairs[first_pair] += polymer[first_pair]
+            new_pairs[first_pair] += polymer[second_pair]
+        polymer = new_pairs
+    print(polymer)
 
-    for i in range(40):
-        temp_pairs: Dict[str, int] = {}
-        for pair in polymer_pairs:
-            if polymer_pairs[pair] > 0:
-                count = polymer_pairs[pair]
-                polymer_pairs[pair] = 0
-                extend = polymer_extentions[pair]
-                if extend not in temp_pairs.keys():
-                    temp_pairs[extend] = count
-                else:
-                    temp_pairs[extend] += count
-        polymer_pairs = temp_pairs
-    print(polymer_pairs)
+def adv14_2(polymer_template: str, polymer_data: List[str]) -> int:
+    first_pairs = Counter()
+    for i in range(len(polymer_template) - 1):
+        first_pairs[polymer_template[i] + polymer_template[i + 1]] += 1
+    polymer_extentions = {}
+    for line in polymer_data:
+        polymer_base = line.strip().split()
+        polymer_extentions[polymer_base[0]] = polymer_base[2]
+        
+    return p2(first_pairs, polymer_extentions)
 
-def adv14_2(polymer_template: str, polymer_extentions: Dict[str, str]) -> int:
-    # return get_polymer_diff(polymer_template, polymer_extentions, 40)
-    return p2(polymer_template, polymer_extentions)
+def solve(pairs, tmpl, steps):
+    for step in range(steps + 1):
+        # count all letters
+        if step == steps:
+            letters = Counter()
+            for pair in pairs:
+                letters[pair[0]] += pairs[pair]
+            letters[tmpl[-1]] += 1
+            return max(letters.values()) - min(letters.values())
+        # add all new pairs
+        new_pairs = Counter()
+        for pair in pairs:
+            new_pairs[pair[0] + rules[pair]] += pairs[pair]
+            new_pairs[rules[pair] + pair[1]] += pairs[pair]
+        pairs = new_pairs
+
 
 
 
@@ -86,8 +104,8 @@ def main():
     polymer_template: str = data[0].strip()
     polymer_extention: Dict[str, str] = construct_polymer_extentions(data[2:])
 
-    print("part 1 - Polymer value after 10 iterations:", adv14_1(polymer_template, polymer_extention))
-    print("part 2 - Polymer value after 40 iterations:", adv14_2(polymer_template, polymer_extention))
+    #print("part 1 - Polymer value after 10 iterations:", adv14_1(polymer_template, polymer_extention))
+    print("part 2 - Polymer value after 40 iterations:", adv14_2(polymer_template, data[2:]))
 
 if __name__ == '__main__':
     main()
