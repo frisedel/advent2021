@@ -45,46 +45,53 @@ def adv14_1(polymer_template: str, polymer_extentions: Dict[str, str]) -> int:
 
 
 def p2(pairs: Dict[str, int], polymer_extentions: Dict[str, str]) -> int:
-    polymer = pairs
-    for i in range(40 + 1):
-        new_pairs = Counter()
+    polymer = deepcopy(pairs)
+    for i in range(40):
+        new_pairs = {}
         for pair in polymer:
             extend = polymer_extentions[pair]
             first_pair = pair[0] + extend
             second_pair = extend + pair[1]
-            new_pairs[first_pair] += polymer[first_pair]
-            new_pairs[first_pair] += polymer[second_pair]
-        polymer = new_pairs
-    print(polymer)
+            if first_pair not in new_pairs.keys():
+                new_pairs[first_pair] = polymer[pair]
+            else:
+                new_pairs[first_pair] += polymer[pair]
+            if second_pair not in new_pairs.keys():
+                new_pairs[second_pair] = polymer[pair]
+            else:
+                new_pairs[second_pair] += polymer[pair]
+        polymer = deepcopy(new_pairs)
+    return polymer
 
 def adv14_2(polymer_template: str, polymer_data: List[str]) -> int:
-    first_pairs = Counter()
-    for i in range(len(polymer_template) - 1):
-        first_pairs[polymer_template[i] + polymer_template[i + 1]] += 1
+    first_pairs = {}
+    for pair in zip(polymer_template, polymer_template[1:]):
+        pair_str = ''.join(pair)
+        if pair_str not in first_pairs.keys():
+           first_pairs[pair_str] = 1
+        else:
+            first_pairs[pair_str] += 1
+
     polymer_extentions = {}
     for line in polymer_data:
         polymer_base = line.strip().split()
         polymer_extentions[polymer_base[0]] = polymer_base[2]
         
-    return p2(first_pairs, polymer_extentions)
+    polymer = p2(first_pairs, polymer_extentions)
 
-def solve(pairs, tmpl, steps):
-    for step in range(steps + 1):
-        # count all letters
-        if step == steps:
-            letters = Counter()
-            for pair in pairs:
-                letters[pair[0]] += pairs[pair]
-            letters[tmpl[-1]] += 1
-            return max(letters.values()) - min(letters.values())
-        # add all new pairs
-        new_pairs = Counter()
-        for pair in pairs:
-            new_pairs[pair[0] + rules[pair]] += pairs[pair]
-            new_pairs[rules[pair] + pair[1]] += pairs[pair]
-        pairs = new_pairs
-
-
+    counted = {}
+    for pair in polymer:
+        if pair[0] not in counted.keys():
+            counted[pair[0]] = polymer[pair]
+        else:
+            counted[pair[0]] += polymer[pair]
+        if pair[1] not in counted.keys():
+            counted[pair[1]] = polymer[pair]
+        else:
+            counted[pair[1]] += polymer[pair]
+    counted[polymer_template[-1]] += 1
+    max_pol, min_pol = get_maxmin(counted)
+    return max_pol-min_pol
 
 
 def construct_polymer_extentions(polymer_data: List[str]) -> Dict[str, str]:
