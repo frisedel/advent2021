@@ -1,4 +1,4 @@
-from day14.adv14 import adv14_1, adv14_2, construct_polymer_extentions, extend_polymer, get_element_comp, get_maxmin
+from day14.adv14 import adv14_1, adv14_2, calculate_first_pairs, construct_polymer_str_extentions, extend_polymer_string, get_element_comp, get_maxmin
 
 test_template = 'NNCB'
 test_polymer_1 = 'NCNBCHB'
@@ -27,12 +27,12 @@ test_ext = [
 test_polymer_map = {'CH': 'CB', 'HH': 'HN', 'CB': 'CH', 'NH': 'NC', 'HB': 'HC', 'HC': 'HB', 'HN': 'HC', 'NN': 'NC', 'BH': 'BH', 'NC': 'NB', 'NB': 'NB', 'BN': 'BB', 'BB': 'BN', 'BC': 'BB', 'CC': 'CN', 'CN': 'CC'}
 
 def test_construct_polymer_extentions():
-    extentions = construct_polymer_extentions(test_ext)
+    extentions = construct_polymer_str_extentions(test_ext)
     print(extentions)
     assert extentions == test_polymer_map
 
 def test_extend_polymer():
-    extended = extend_polymer(test_template, test_polymer_map)
+    extended = extend_polymer_string(test_template, test_polymer_map)
     print(extended)
     assert extended == test_polymer_1
 
@@ -48,6 +48,19 @@ def test_get_maxmin():
 def test_adv14_1():
     element_value = adv14_1(test_template, test_polymer_map)
     assert element_value == 1588
+
+def test_first_pairs():
+    first_pairs = calculate_first_pairs(test_template)
+    assert first_pairs == {'NN': 1, 'NC': 1, 'CB': 1}
+
+def test_polymer_extention_rules():
+    pass
+
+def test_count_elements():
+    pass
+
+def test_process_polymer():
+    pass
 
 def test_adv14_2():
     element_value = adv14_2(test_template, test_polymer_map)
