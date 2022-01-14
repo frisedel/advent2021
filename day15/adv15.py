@@ -18,14 +18,14 @@ def horistic(next_node: Node, stop_node: Node):
     return sqrt(dX + dY)
 
 
-def best_node(frontier: List[Node], stop_node, cost_to_node) -> Node:
+def best_node(frontier: List[Node], stop_node: Node, cost_to_node: Dict[Node, int]) -> Node:
     score = {}
-    for obj in frontier:
-        score[obj] = (cost_to_node[obj]+horistic(obj, stop_node))
+    for node in frontier:
+        score[node] = (cost_to_node[node] + node.value + horistic(node, stop_node))
     return min(frontier, key=lambda x: score[x])
 
 
-def reconstruct_path(cameFrom, startNode, stopNode):
+def reconstruct_path(cameFrom, startNode: Node, stopNode: Node) -> List[Node]:
     path = []
     node = stopNode
     while True:
@@ -39,12 +39,12 @@ def reconstruct_path(cameFrom, startNode, stopNode):
 
 
 def a_star (start_ID: str, end_ID: str, map_2d: Dict[int, Node]) -> List[Node]:
-    start_node = map_2d[start_ID]
-    stop_node = map_2d[end_ID]
-    frontier = [start_node]
-    cost_to_node = {start_node: 0}
+    start_node: Node = map_2d[start_ID]
+    stop_node: Node = map_2d[end_ID]
+    frontier: List[Node] = [start_node]
+    cost_to_node: Dict[Node, int] = {start_node: 0}
     came_from = {}
-    visited = []
+    visited: List[Node] = []
 
     while True:
         if not frontier:
@@ -55,21 +55,22 @@ def a_star (start_ID: str, end_ID: str, map_2d: Dict[int, Node]) -> List[Node]:
         if current == stop_node:
             return reconstruct_path(came_from, start_node, stop_node)
         else:
+            #check cost_to_node
             for next_node in current.neighbours:
                 if (next_node not in visited) and (next_node not in frontier):
                     frontier.append(next_node)
                     came_from[next_node] = current
-                    cost_to_node[next_node] = cost_to_node[current] + horistic(current, next_node)
+                    cost_to_node[next_node] = cost_to_node[current] + next_node.value + horistic(next_node, stop_node)
                 if next_node in visited:
-                    if (cost_to_node[current] + horistic(current, next_node)) < cost_to_node[next_node]:
+                    if (cost_to_node[current] + next_node.value + horistic(next_node, stop_node)) < cost_to_node[next_node]:
                         came_from[next_node] = current
-                        cost_to_node[next_node] = cost_to_node[current] + horistic(current, next_node)
+                        cost_to_node[next_node] = cost_to_node[current] + next_node.value + horistic(next_node, stop_node)
                         frontier.append(next_node)
                         visited.remove(next_node)
                 if next_node in frontier:
-                    if (cost_to_node[current] + horistic(current, next_node)) < cost_to_node[next_node]:
+                    if (cost_to_node[current] + next_node.value + horistic(next_node, stop_node)) < cost_to_node[next_node]:
                         came_from[next_node] = current
-                        cost_to_node[next_node] = cost_to_node[current] + horistic(current, next_node)
+                        cost_to_node[next_node] = cost_to_node[current] + next_node.value + horistic(next_node, stop_node)
 
 
 def adv15_1(dict_map: Dict[int, Node], int_map: List[List[int]]):
@@ -77,16 +78,11 @@ def adv15_1(dict_map: Dict[int, Node], int_map: List[List[int]]):
     reconstructed_path = a_star('0:0', end_node, dict_map)
     tot = 0
     if reconstructed_path:
-        for node in reconstructed_path:
+        for node in reconstructed_path[1:]:
             print(node.nodeID, node.value)
             tot += node.value
     print(tot)
-    """
-    use A* to find optimal path
-    total cost to next node/number should be the cost to go to that node plus distance to end where the latter is the heuristic value. distance is eiter straight line or steps
-    possibly check frontier every loop for end before taking the one with the minimal cost
-    """
-    pass
+    return tot
 
 
 def adv15_2():
