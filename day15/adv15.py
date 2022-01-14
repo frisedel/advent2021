@@ -55,22 +55,21 @@ def a_star (start_ID: str, end_ID: str, map_2d: Dict[int, Node]) -> List[Node]:
         if current == stop_node:
             return reconstruct_path(came_from, start_node, stop_node)
         else:
-            #check cost_to_node
             for next_node in current.neighbours:
                 if (next_node not in visited) and (next_node not in frontier):
                     frontier.append(next_node)
                     came_from[next_node] = current
-                    cost_to_node[next_node] = cost_to_node[current] + next_node.value + horistic(next_node, stop_node)
+                    cost_to_node[next_node] = cost_to_node[current] + next_node.value
                 if next_node in visited:
-                    if (cost_to_node[current] + next_node.value + horistic(next_node, stop_node)) < cost_to_node[next_node]:
+                    if (cost_to_node[current] + next_node.value) < cost_to_node[next_node]:
                         came_from[next_node] = current
-                        cost_to_node[next_node] = cost_to_node[current] + next_node.value + horistic(next_node, stop_node)
+                        cost_to_node[next_node] = cost_to_node[current] + next_node.value
                         frontier.append(next_node)
                         visited.remove(next_node)
                 if next_node in frontier:
-                    if (cost_to_node[current] + next_node.value + horistic(next_node, stop_node)) < cost_to_node[next_node]:
+                    if (cost_to_node[current] + next_node.value) < cost_to_node[next_node]:
                         came_from[next_node] = current
-                        cost_to_node[next_node] = cost_to_node[current] + next_node.value + horistic(next_node, stop_node)
+                        cost_to_node[next_node] = cost_to_node[current] + next_node.value
 
 
 def adv15_1(dict_map: Dict[int, Node], int_map: List[List[int]]):
@@ -79,9 +78,7 @@ def adv15_1(dict_map: Dict[int, Node], int_map: List[List[int]]):
     tot = 0
     if reconstructed_path:
         for node in reconstructed_path[1:]:
-            print(node.nodeID, node.value)
             tot += node.value
-    print(tot)
     return tot
 
 
@@ -133,7 +130,7 @@ def update_node_neighbours(node: Node, int_map: List[List[int]], dict_map: Dict[
 
 def main():
     data = []
-    with open("map_data_small.txt") as f:
+    with open("map_data_large.txt") as f:
         data = f.readlines()
     f.close
 
@@ -144,7 +141,7 @@ def main():
             row.append(int(value))
         int_map.append(row)
 
-    dict_map: Dict[int, Node] = {}
+    dict_map: Dict[str, Node] = {}
     for y in range(len(data)):
         for x in range(len(line)):
             node = construct_node(x, y, int_map)
