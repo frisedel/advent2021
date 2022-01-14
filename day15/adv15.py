@@ -4,21 +4,21 @@ from math import pow, sqrt
 from typing import Dict, List, Tuple
 
 class Node:
-    def __init__(self, number: int, x: int, y: int, value: int):
-        self.number = number
+    def __init__(self, nodeID: str, x: int, y: int, value: int):
+        self.nodeID = nodeID
         self.x = x
         self.y = y
         self.value = value
         self.neighbours: List[Node] = []
 
 
-def horistic(next_node, stop_node):
-    dX = pow((next_node.X - stop_node.X), 2)
-    dY = pow((next_node.Y - stop_node.Y), 2)
+def horistic(next_node: Node, stop_node: Node):
+    dX = pow((next_node.x - stop_node.x), 2)
+    dY = pow((next_node.y - stop_node.y), 2)
     return sqrt(dX + dY)
 
 
-def best_node(frontier, stop_node, cost_to_node):
+def best_node(frontier: List[Node], stop_node, cost_to_node) -> Node:
     score = {}
     for obj in frontier:
         score[obj] = (cost_to_node[obj]+horistic(obj, stop_node))
@@ -38,9 +38,9 @@ def reconstruct_path(cameFrom, startNode, stopNode):
             node = cameFrom[node]
 
 
-def a_star (startNode, stopNode):
-    start_node = city[startNode]
-    stop_node = city[stopNode]
+def a_star (start_ID: str, end_ID: str, map_2d: Dict[int, Node]) -> List[Node]:
+    start_node = map_2d[start_ID]
+    stop_node = map_2d[end_ID]
     frontier = [start_node]
     cost_to_node = {start_node: 0}
     came_from = {}
@@ -55,7 +55,7 @@ def a_star (startNode, stopNode):
         if current == stop_node:
             return reconstruct_path(came_from, start_node, stop_node)
         else:
-            for next_node in current.connections:
+            for next_node in current.neighbours:
                 if (next_node not in visited) and (next_node not in frontier):
                     frontier.append(next_node)
                     came_from[next_node] = current
@@ -72,7 +72,15 @@ def a_star (startNode, stopNode):
                         cost_to_node[next_node] = cost_to_node[current] + horistic(current, next_node)
 
 
-def adv15_1():
+def adv15_1(dict_map: Dict[int, Node], int_map: List[List[int]]):
+    end_node = ''.join([str(len(int_map[0])-1), ':', str(len(int_map)-1)])
+    reconstructed_path = a_star('0:0', end_node, dict_map)
+    tot = 0
+    if reconstructed_path:
+        for node in reconstructed_path:
+            print(node.nodeID, node.value)
+            tot += node.value
+    print(tot)
     """
     use A* to find optimal path
     total cost to next node/number should be the cost to go to that node plus distance to end where the latter is the heuristic value. distance is eiter straight line or steps
@@ -84,17 +92,19 @@ def adv15_1():
 def adv15_2():
     pass
 
-def construct_node(x: int, y: int, map: List[List[int]]) -> Node:
-    number = y * len(map) + x
-    return Node(number, x, y, map[y][x])
 
-def point_exist(x_y: Tuple[int, int], map: List[List[int]]) -> bool:
-    max_x = len(map[0])-1
-    max_y = len(map)-1
+def construct_node(x: int, y: int, map_2d: List[List[int]]) -> Node:
+    nodeID = ''.join([str(x), ':', str(y)])
+    return Node(nodeID, x, y, map_2d[y][x])
+
+
+def point_exist(x_y: Tuple[int, int], int_map: List[List[int]]) -> bool:
+    max_x = len(int_map[0])-1
+    max_y = len(int_map)-1
     return 0 <= x_y[0] <= max_x and 0 <= x_y[1] <= max_y
 
 
-def update_node(node: Node, map: List[List[int]], map_dict: Dict[int, Node]):
+def update_node_neighbours(node: Node, int_map: List[List[int]], dict_map: Dict[str, Node]):
     #   [.....]
     #   [--a--]
     #   [-cPd-]
@@ -107,21 +117,21 @@ def update_node(node: Node, map: List[List[int]], map_dict: Dict[int, Node]):
     d = (node.x+1, node.y)
 
     exists: List[Tuple[int, int]] = []
-    if point_exist(a, map):
+    if point_exist(a, int_map):
         exists.append(a)
-    if point_exist(b, map):
+    if point_exist(b, int_map):
         exists.append(b)
-    if point_exist(c, map):
+    if point_exist(c, int_map):
         exists.append(c)
-    if point_exist(d, map):
+    if point_exist(d, int_map):
         exists.append(d)
 
     neighbours: List[Node] = []
     for point in exists:
-        for neighbour_node in map_dict:
-            if map_dict[neighbour_node].x == point[0] and map_dict[neighbour_node].y == point[1]:
-                neighbours.append(map_dict[neighbour_node])
-    
+        for neighbour_node in dict_map:
+            if dict_map[neighbour_node].x == point[0] and dict_map[neighbour_node].y == point[1]:
+                neighbours.append(dict_map[neighbour_node])
+
     node.neighbours.extend(neighbours)
 
 
@@ -137,17 +147,17 @@ def main():
         for value in line.strip():
             row.append(int(value))
         int_map.append(row)
-    
-    map: Dict[int, Node] = {}
+
+    dict_map: Dict[int, Node] = {}
     for y in range(len(data)):
         for x in range(len(line)):
             node = construct_node(x, y, int_map)
-            map[node.number] = node
-    
-    for node in map:
-        update_node(map[node], int_map, map)
+            dict_map[node.nodeID] = node
 
-    print("part 1 - Cost for path with lowest risk:", adv15_1())
+    for node in dict_map:
+        update_node_neighbours(dict_map[node], int_map, dict_map)
+
+    print("part 1 - Cost for path with lowest risk:", adv15_1(dict_map, int_map))
     print("part 2 - :", adv15_2())
 
 if __name__ == '__main__':
