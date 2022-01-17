@@ -1,4 +1,4 @@
-from day15.adv15 import Node, adv15_1, construct_node, enlarge_map
+from day15.adv15 import Node, adv15_1, adv15_2, construct_node, enlarge_map
 from test_input.test_data_day15 import small_map, large_map
 
 def test_horistic():
@@ -39,4 +39,5 @@ def test_adv15_1():
     assert total_risk == 40
 
 def test_adv15_2():
-    pass
+    total_risk = adv15_2(small_map)
+    assert total_risk == 315

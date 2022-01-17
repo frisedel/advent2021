@@ -2,6 +2,7 @@
 
 from math import pow, sqrt
 from typing import Dict, List, Tuple
+from copy import deepcopy
 
 class Node:
     def __init__(self, nodeID: str, x: int, y: int, risk_value: int):
@@ -77,9 +78,12 @@ def a_star (start_ID: str, end_ID: str, dict_map: Dict[int, Node]) -> List[Node]
                         cost_to_node[next_node] = cost_to_node[current] + next_node.risk_value
 
 
+def create_node_id(x: int, y: int):
+    return ''.join([str(x), ':', str(y)])
+
+
 def construct_node(x: int, y: int, map_2d: List[List[int]]) -> Node:
-    nodeID = ''.join([str(x), ':', str(y)])
-    return Node(nodeID, x, y, map_2d[y][x])
+    return Node(create_node_id(x, y), x, y, map_2d[y][x])
 
 
 def point_exist(x_y: Tuple[int, int], int_map: List[List[int]]) -> bool:
@@ -112,10 +116,9 @@ def update_node_neighbours(node: Node, int_map: List[List[int]], dict_map: Dict[
 
     neighbours: List[Node] = []
     for point in exists:
-        for neighbour_node in dict_map:
-            if dict_map[neighbour_node].x == point[0] and dict_map[neighbour_node].y == point[1]:
-                neighbours.append(dict_map[neighbour_node])
-
+        id = create_node_id(point[0], point[1])
+        neighbour = dict_map[id]
+        neighbours.append(neighbour)
     node.neighbours.extend(neighbours)
 
 
@@ -132,6 +135,7 @@ def create_map(int_map: List[List[int]]):
         print("number", n, "node", node, end='\r')
         update_node_neighbours(dict_map[node], int_map, dict_map)
         n +=1
+    print("")
     print("create done")
     return dict_map
 
@@ -139,7 +143,7 @@ def create_map(int_map: List[List[int]]):
 def adv15_1(int_map: List[List[int]]):
     dict_map: Dict[str, Node] = create_map(int_map)
 
-    end_node = ''.join([str(len(int_map[0])-1), ':', str(len(int_map)-1)])
+    end_node = create_node_id(len(int_map[0])-1, len(int_map)-1)
     reconstructed_path = a_star('0:0', end_node, dict_map)
     total_risk = 0
     if reconstructed_path:
@@ -152,7 +156,7 @@ def adv15_1(int_map: List[List[int]]):
 
 def enlarge_map(small_map: List[List[int]], grow_value: int):
     print("enlarging map")
-    large_map = small_map[:]
+    large_map = deepcopy(small_map)
     small_width = len(small_map[0])
     small_height = len(small_map)
     for i in range(grow_value-1):
@@ -170,7 +174,7 @@ def adv15_2(small_map: List[List[int]]):
     large_map = enlarge_map(small_map, 5)
     dict_map: Dict[str, Node] = create_map(large_map)
 
-    end_node = ''.join([str(len(large_map[0])-1), ':', str(len(large_map)-1)])
+    end_node = create_node_id(len(large_map[0])-1, len(large_map)-1)
     reconstructed_path = a_star('0:0', end_node, dict_map)
     total_risk = 0
     if reconstructed_path:
@@ -183,7 +187,7 @@ def adv15_2(small_map: List[List[int]]):
 
 def main():
     data = []
-    with open("map_data_large.txt") as f:
+    with open("map_data_small.txt") as f:
         data = f.readlines()
     f.close
 
@@ -193,6 +197,7 @@ def main():
         for value in line.strip():
             row.append(int(value))
         int_map.append(row)
+        print(row)
 
     print("part 1 - Cost for path with lowest risk:", adv15_1(int_map))
     print("part 2 - Cost for path with lowest risk:", adv15_2(int_map))
