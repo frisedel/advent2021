@@ -104,22 +104,14 @@ def update_node_neighbours(node: Node, int_map: List[List[int]], dict_map: Dict[
     c = (node.x-1, node.y)
     d = (node.x+1, node.y)
 
-    exists: List[Tuple[int, int]] = []
     if point_exist(a, int_map):
-        exists.append(a)
+        node.neighbours.append(dict_map[create_node_id(a[0], a[1])])
     if point_exist(b, int_map):
-        exists.append(b)
+        node.neighbours.append(dict_map[create_node_id(b[0], b[1])])
     if point_exist(c, int_map):
-        exists.append(c)
+        node.neighbours.append(dict_map[create_node_id(c[0], c[1])])
     if point_exist(d, int_map):
-        exists.append(d)
-
-    neighbours: List[Node] = []
-    for point in exists:
-        id = create_node_id(point[0], point[1])
-        neighbour = dict_map[id]
-        neighbours.append(neighbour)
-    node.neighbours.extend(neighbours)
+        node.neighbours.append(dict_map[create_node_id(d[0], d[1])])
 
 
 def create_map(int_map: List[List[int]]):
@@ -142,16 +134,9 @@ def create_map(int_map: List[List[int]]):
 
 def adv15_1(int_map: List[List[int]]):
     dict_map: Dict[str, Node] = create_map(int_map)
-
     end_node = create_node_id(len(int_map[0])-1, len(int_map)-1)
     reconstructed_path = a_star('0:0', end_node, dict_map)
-    total_risk = 0
-    if reconstructed_path:
-        for node in reconstructed_path[1:]:
-            total_risk += node.risk_value
-        return total_risk
-    else:
-        return "Error in path"
+    return sum(node.risk_value for node in reconstructed_path[1:])
 
 
 def enlarge_map(small_map: List[List[int]], grow_value: int):
@@ -173,16 +158,9 @@ def enlarge_map(small_map: List[List[int]], grow_value: int):
 def adv15_2(small_map: List[List[int]]):
     large_map = enlarge_map(small_map, 5)
     dict_map: Dict[str, Node] = create_map(large_map)
-
     end_node = create_node_id(len(large_map[0])-1, len(large_map)-1)
     reconstructed_path = a_star('0:0', end_node, dict_map)
-    total_risk = 0
-    if reconstructed_path:
-        for node in reconstructed_path[1:]:
-            total_risk += node.risk_value
-        return total_risk
-    else:
-        return "Error in path"
+    return sum(node.risk_value for node in reconstructed_path[1:])
 
 
 def main():
