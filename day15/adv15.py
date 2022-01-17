@@ -26,12 +26,14 @@ def best_node(frontier: List[Node], stop_node: Node, cost_to_node: Dict[Node, in
 
 
 def reconstruct_path(cameFrom, startNode: Node, stopNode: Node) -> List[Node]:
+    print("reconstruct path")
     path = []
     node = stopNode
     while True:
         if node == startNode:
             path.append(node)
             path.reverse()
+            print("reconstruct done")
             return path
         else:
             path.append(node)
@@ -39,6 +41,7 @@ def reconstruct_path(cameFrom, startNode: Node, stopNode: Node) -> List[Node]:
 
 
 def a_star (start_ID: str, end_ID: str, dict_map: Dict[int, Node]) -> List[Node]:
+    print("calculate path")
     start_node: Node = dict_map[start_ID]
     stop_node: Node = dict_map[end_ID]
     frontier: List[Node] = [start_node]
@@ -48,11 +51,13 @@ def a_star (start_ID: str, end_ID: str, dict_map: Dict[int, Node]) -> List[Node]
 
     while True:
         if not frontier:
+            print("path failed")
             return False
         current = best_node(frontier, stop_node, cost_to_node)
         visited.append(current)
         frontier.remove(current)
         if current == stop_node:
+            print("path done")
             return reconstruct_path(came_from, start_node, stop_node)
         else:
             for next_node in current.neighbours:
@@ -115,14 +120,19 @@ def update_node_neighbours(node: Node, int_map: List[List[int]], dict_map: Dict[
 
 
 def create_map(int_map: List[List[int]]):
+    print("creating map")
     dict_map: Dict[str, Node] = {}
     for y in range(len(int_map)):
         for x in range(len(int_map[0])):
             node = construct_node(x, y, int_map)
             dict_map[node.nodeID] = node
-
+    print("updating", len(dict_map), "neighbours")
+    n = 1
     for node in dict_map:
+        print("number", n, "node", node, end='\r')
         update_node_neighbours(dict_map[node], int_map, dict_map)
+        n +=1
+    print("create done")
     return dict_map
 
 
@@ -140,23 +150,35 @@ def adv15_1(int_map: List[List[int]]):
         return "Error in path"
 
 
-def get_five_values(value: int):
-    return value, value+1 % 10, value+2 % 10, value+3 % 10, value+4 % 10
+def enlarge_map(small_map: List[List[int]], grow_value: int):
+    print("enlarging map")
+    large_map = small_map[:]
+    small_width = len(small_map[0])
+    small_height = len(small_map)
+    for i in range(grow_value-1):
+        for line in large_map:
+            extend_right = [x % 9 + 1 for x in line[-small_width:]]
+            line.extend(extend_right)
+        for line in large_map[small_height * i:small_height*(i+1)]:
+            new_line = [x % 9 + 1 for x in line]
+            large_map.append(new_line)
+    print("enlarge done")
+    return large_map
 
 
-def enlarge_map(small_map: List[List[int]]):
-    large_map = [[0]*len(small_map[0])*5]*len(small_map)*5
-    for y in range(len(small_map)):
-        for x in range(len(small_map[0])):
-            small_value = small_map[y][x]
-            s1, s2, s3, s4, s5 = get_five_values(small_value)
-            pass
+def adv15_2(small_map: List[List[int]]):
+    large_map = enlarge_map(small_map, 5)
+    dict_map: Dict[str, Node] = create_map(large_map)
 
-
-def adv15_2(int_map: List[List[int]]):
-    print("mod", (8 % 10))
-    large_map = enlarge_map(int_map)
-    pass
+    end_node = ''.join([str(len(large_map[0])-1), ':', str(len(large_map)-1)])
+    reconstructed_path = a_star('0:0', end_node, dict_map)
+    total_risk = 0
+    if reconstructed_path:
+        for node in reconstructed_path[1:]:
+            total_risk += node.risk_value
+        return total_risk
+    else:
+        return "Error in path"
 
 
 def main():
@@ -172,7 +194,7 @@ def main():
             row.append(int(value))
         int_map.append(row)
 
-    #print("part 1 - Cost for path with lowest risk:", adv15_1(int_map))
+    print("part 1 - Cost for path with lowest risk:", adv15_1(int_map))
     print("part 2 - Cost for path with lowest risk:", adv15_2(int_map))
 
 if __name__ == '__main__':
