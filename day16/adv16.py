@@ -1,82 +1,97 @@
 #!/usr/bin/env python3
-from typing import Tuple
+from math import prod
+from typing import List, Tuple
 
-def cut_str(transmission: str, cut_at: int) -> Tuple[str, str]:
-    return transmission[:cut_at], transmission[cut_at:]
-
-
-def cut_str_to_int(transmission: str, cut_at: int) -> Tuple[int, str]:
-    val, transmission = cut_str(transmission, cut_at)
-    return int(val, 2), transmission
-
-
-def read_litteral(transmission: str) -> None:
-    last_block = False
-    # this should process the value for literal, but that is not needed for part 1
-    # litteral_string = ''
-
-    while not last_block:
-        block, transmission = cut_str(transmission, 5)
-        if block[0] == "0":
-            last_block = True
-            # add to litteral_string
-        # else:
-        #     add to litteral_string
-    # convert litteral_string to int and return
+class Packet:
+    def __init__(self, version: int, type_id: int, value: int):
+        self.version = version
+        self.type_id = type_id
+        self.value = value
+        self.sub_packets: List[Packet] = []
 
 
-def read_operator(transmission: str, version_total: int):
-    operator_lenght_type, transmission = cut_str(transmission, 1)
-    if operator_lenght_type == "0":
-        message_lenght, transmission = cut_str_to_int(transmission, 15)
-        operator_payload, transmission = cut_str(transmission, message_lenght)
-        return decode_message(operator_payload, version_total)
+def get_literal_value(transmission: str, p: int) -> Tuple[int, int]:
+    value = ""
+    while True:
+        last_group = transmission[p] == "0"
+        value += transmission[(p + 1):(p + 5)]
+        p += 5
+        if last_group:
+            break
+    return int(value, 2), p
+
+
+def get_sub_packets(transmission: str, p: int) -> Tuple[List[Packet], int]:
+    length_type_id = int(transmission[p], 2)
+    p += 1
+    sub_packets = []
+    if length_type_id == 0:
+        length_of_sub_packets = int(transmission[p:(p + 15)], 2)
+        p += 15
+        end_sub_packet = p + length_of_sub_packets
+        while p < end_sub_packet:
+            sub_packet, p = decode_transmission(transmission, p)
+            sub_packets.append(sub_packet)
+        return sub_packets, p
     else:
-        number_sub_packs, transmission = cut_str_to_int(transmission, 11)
-        acc_total = 0
-        for i in range(number_sub_packs):
-            version_total += decode_message()
+        number_of_sub_packets = int(transmission[p:(p + 11)], 2)
+        p += 11
+        for _ in range(number_of_sub_packets):
+            sub_packet, p = decode_transmission(transmission, p)
+            sub_packets.append(sub_packet)
+        return sub_packets, p
 
 
-def decode_message(transmission: str, version_total: int):
-    if len(transmission) == 0:
-        return version_total
+def calculate_packet_value(type_id: int, sub_packets: List[Packet]) -> int:
+    if type_id < 4:
+        values = (sub_packet.value for sub_packet in sub_packets)
+        if type_id == 0:
+            return(sum(values))
+        elif type_id == 1:
+            return(prod(values))
+        elif type_id == 2:
+            return(min(values))
+        elif type_id == 3:
+            return(max(values))
+    else:
+        if type_id == 5:
+            return int(sub_packets[0].value > sub_packets[1].value)
+        elif type_id == 6:
+            return int(sub_packets[0].value < sub_packets[1].value)
+        elif type_id == 7:
+            return int(sub_packets[0].value == sub_packets[1].value)
 
-    header, transmission = cut_str(transmission, 6)
-    version_total += int(header[:3], 2)
-    type_id = int(header[3:6], 2)
 
+def decode_transmission(transmission: str, p: int) -> Tuple[Packet, int]:
+    version = int(transmission[p:(p + 3)], 2)
+    type_id = int(transmission[(p + 3):(p + 6)], 2)
+    p += 6
     if type_id == 4:
-        read_litteral(transmission)
+        value, p = get_literal_value(transmission, p)
+        return Packet(version, type_id, value), p
     else:
-        read_operator(transmission, version_total)
-    decode_message(transmission, version_total)
+        sub_packets, p = get_sub_packets(transmission, p)
+        value = calculate_packet_value(type_id, sub_packets)
+        packet = Packet(version, type_id, value)
+        packet.sub_packets.extend(sub_packets)
+        return packet, p
 
 
-def adv16_1(base_message: str):
-    binary_message = base_message[:]
-    version_total = 0
-    # while len(binary_message) > 0:
-    #     print(version_total)
-    #     head = binary_message[:6]
-    #     version = int(head[:3], 2)
-    #     version_total += version
-    #     # print("type_id:", head[3:])
-    #     type_id = int(head[3:], 2)
-    #     binary_message = binary_message[6:]
-    #     if type_id == 4:
-    #         # read_literal() when value is needed
-    #         # for now, just skip correct amount of bits
-    #         pass
-    #     else:
-    #         # read_operator() when doing operations (this should be recusive for operators in operators)
-    #         # for now, just skip correct amount of bits
-    #         pass
-    return version_total
+def sum_versions(packet: Packet) -> int:
+    total = packet.version
+    for sub_packet in packet.sub_packets:
+        total += sum_versions(sub_packet)
+    return total
 
 
-def adv16_2():
-    pass
+def adv16_1(transmission: str):
+    packet = decode_transmission(transmission, 0)[0]
+    return sum_versions(packet)
+
+
+def adv16_2(transmission: str):
+    packet = decode_transmission(transmission, 0)[0]
+    return packet.value
 
 
 def main():
@@ -85,12 +100,12 @@ def main():
         data = f.readlines()
     f.close
 
-    binary_string = ''
+    transmission = ''
     for hex in data[0]:
-        binary_string += str("{0:04b}".format(int(hex, 16)))
+        transmission += str("{0:04b}".format(int(hex, 16)))
 
-    print("part 1 - :", adv16_1(binary_string))
-    print("part 2 - :", adv16_2())
+    print("part 1 - Sum of packet versions:", adv16_1(transmission))
+    print("part 2 - Transmission value:", adv16_2(transmission))
 
 if __name__ == '__main__':
     main()
