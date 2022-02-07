@@ -85,24 +85,27 @@ def sum_versions(packet: Packet) -> int:
 
 
 def adv16_1(transmission: str):
-    packet = decode_transmission(transmission, 0)[0]
+    packet, _ = decode_transmission(transmission, 0)
     return sum_versions(packet)
 
 
 def adv16_2(transmission: str):
-    packet = decode_transmission(transmission, 0)[0]
+    packet, _ = decode_transmission(transmission, 0)
     return packet.value
 
 
-def main():
-    data = []
-    with open("bits_data.txt") as f:
-        data = f.readlines()
-    f.close
-
+def hex_to_bin(data:str) -> str:
     transmission = ''
-    for hex in data[0]:
+    for hex in data:
         transmission += str("{0:04b}".format(int(hex, 16)))
+    return transmission
+
+
+def main():
+    with open('bits_data.txt', 'r') as f:
+        data = f.read().rstrip()
+
+    transmission = hex_to_bin(data)
 
     print("part 1 - Sum of packet versions:", adv16_1(transmission))
     print("part 2 - Transmission value:", adv16_2(transmission))
