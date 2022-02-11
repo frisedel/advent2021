@@ -3,22 +3,14 @@
 import re
 from typing import Dict
 
-def get_vy_max(y_min: int):
-    return abs(y_min)
-
-
-def get_y_max(y_min: int):
-    return sum(range(get_vy_max(y_min)))
-
-
 def adv17_1(target_area: Dict[str, int]):
-    return get_y_max(target_area["y_min"])
+    return sum(range(abs(target_area["y_min"])))
 
 
 def get_vx_min(x_min: int):
     vx_min = 0
     while True:
-        if sum(range(vx_min)) >= x_min:
+        if sum(range(vx_min+1)) >= x_min:
             return vx_min
         vx_min += 1
 
@@ -45,13 +37,13 @@ def can_hit_target_area(vx: int, vy: int, taget_area: Dict[str, int]):
 
 def adv17_2(target_area: Dict[str, int]):
     vx_min = get_vx_min(target_area["x_min"])
-    vx_max = target_area["x_max"]
-    vy_max = get_vy_max(target_area["y_min"])
+    vx_max = target_area["x_max"] + 1
+    vy_max = abs(target_area["y_min"]) + 1
 
     distinct_volocitys = 0
 
-    for vx in range(vx_min-1, vx_max+1):
-        for vy in range(-vy_max, vy_max+1):
+    for vx in range(vx_min, vx_max):
+        for vy in range(-vy_max, vy_max):
             distinct_volocitys += can_hit_target_area(vx, vy, target_area)
 
     return distinct_volocitys
