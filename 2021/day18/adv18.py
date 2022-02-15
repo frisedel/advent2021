@@ -3,22 +3,22 @@
 from ast import literal_eval
 from typing import List
 
-class Sailfish_number:
+class Snailfish_number:
     def __init__(self, left: int or List[int], right: int or List[int]):
-        self.left: int or Sailfish_number = None
-        self.right: int or Sailfish_number = None
+        self.left: int or Snailfish_number = None
+        self.right: int or Snailfish_number = None
         if type(left) == list:
-            self.left = Sailfish_number(left[0], left[1])
+            self.left = Snailfish_number(left[0], left[1])
         else:
             self.left = left
         if type(right) == list:
-            self.right = Sailfish_number(right[0], right[1])
+            self.right = Snailfish_number(right[0], right[1])
         else:
             self.right = right
         print(self.left, self.right)
 
 
-def adv18_1(numbers: List[int or Sailfish_number]):
+def adv18_1(numbers: List[int or Snailfish_number]):
     pass
 
 
@@ -34,8 +34,8 @@ def main():
 
     numbers = []
     for line in data:
-        sfn = literal_eval(line)
-        numbers.append(Sailfish_number(sfn[0], sfn[1]))
+        number = literal_eval(line)
+        numbers.append(Snailfish_number(number[0], number[1]))
 
     print("part 1 - :", adv18_1(numbers))
     print("part 2 - :", adv18_2())
