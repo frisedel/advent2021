@@ -14,7 +14,8 @@ def convert_calorie_data(calorie_data: List[str]) -> List[List[int]]:
     size = len(calorie_data)
     idx_list = [idx + 1 for idx, val in enumerate(calorie_data) if val == '\n']
     split_data = [calorie_data[i: j] for i, j in zip(
-        [0] + idx_list, idx_list + ([size] if idx_list[-1] != size else []))]
+        [0] + idx_list, idx_list + ([size] if idx_list[-1] != size else [])
+    )]
 
     elf_calories: List[List[int]] = []
     for data in split_data:
@@ -47,10 +48,8 @@ def main():
     elf_calories = convert_calorie_data(lines)
     compressed_calories = sum_calories(elf_calories)
 
-    print("part 1 - max calories carried by one elf: ",
-          adv1_1(compressed_calories))
-    print("part 2 - max calories carried by three elfs: ",
-          adv1_2(compressed_calories))
+    print("part 1 - max calories carried by one elf: ", adv1_1(compressed_calories))
+    print("part 2 - max calories carried by three elfs: ", adv1_2(compressed_calories))
 
 
 if __name__ == '__main__':
