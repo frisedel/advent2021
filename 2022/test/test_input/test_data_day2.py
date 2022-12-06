@@ -1,1 +1,1 @@
-small_test = [["A Y"], ["B X"], ["C Z"]]
+small_test = ["AY", "BX", "CZ"]
