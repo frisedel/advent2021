@@ -1,11 +1,48 @@
 #!/usr/bin/env python3
 
-def adv3_1():
+from typing import Dict, List, Tuple
+
+
+def search_rucksack(rucksack: Tuple[str, str]) -> List[str]:
+    duplicates: List[str] = []
+    for item in rucksack[0]:
+        if item in rucksack[1]:
+            duplicates.append(item)
+    return duplicates
+
+
+def find_duplicates(rucksacks: List[Tuple[str, str]]):
+    duplicates = []
+    for rucksack in rucksacks:
+        duplicates.append(search_rucksack(rucksack))
+    return [item for sublist in duplicates for item in sublist]
+
+def adv3_1(rucksacks: List[Tuple[str, str]]):
+    duplicates = find_duplicates(rucksacks)
+    duplicate_map: Dict[str, int] = {}
+    for item in duplicates:
+        if item not in duplicate_map:
+            duplicate_map[item] = 1
+        else:
+            duplicate_map[item] += 1
+    print(duplicate_map)
     return
 
 
 def adv3_2():
     return
+
+
+def split_content(content: str) -> Tuple[str, str]:
+    half_length = int(len(content)/2)
+    return content[:half_length], content[half_length:-1]
+
+
+def create_rucksacks(rucksack_data: List[str]) -> List[Tuple[str, str]]:
+    rucksacks: List[Tuple[str, str]] = []
+    for data in rucksack_data:
+        rucksacks.append(split_content(data))
+    return rucksacks
 
 
 def main():
@@ -15,7 +52,9 @@ def main():
         lines = f.readlines()
     f.close()
 
-    print("part 1 - : ", adv3_1())
+    rucksacks = create_rucksacks(lines)
+
+    print("part 1 - : ", adv3_1(rucksacks))
     print("part 2 - : ", adv3_2())
 
 
