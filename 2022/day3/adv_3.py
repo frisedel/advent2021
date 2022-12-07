@@ -11,23 +11,33 @@ def search_rucksack(rucksack: Tuple[str, str]) -> List[str]:
     return duplicates
 
 
-def find_duplicates(rucksacks: List[Tuple[str, str]]):
+def find_duplicates(rucksacks: List[Tuple[str, str]]) -> List[str]:
     duplicates = []
     for rucksack in rucksacks:
         duplicates.append(search_rucksack(rucksack))
     return [item for sublist in duplicates for item in sublist]
 
-def adv3_1(rucksacks: List[Tuple[str, str]]):
-    duplicates = find_duplicates(rucksacks)
+
+def create_map(duplicates: List[str]) -> Dict[str, int]:
     duplicate_map: Dict[str, int] = {}
     for item in duplicates:
         if item not in duplicate_map:
             duplicate_map[item] = 1
         else:
             duplicate_map[item] += 1
-    priority = list(zip(string.ascii_lowercase, range(1, 27))) + list(zip(string.ascii_uppercase, range(27, 53)))
+    return duplicate_map
 
-    return
+
+def adv3_1(rucksacks: List[Tuple[str, str]]) -> int:
+    duplicates = find_duplicates(rucksacks)
+    duplicate_map = create_map(duplicates)
+
+    priority = dict(zip(string.ascii_lowercase+string.ascii_uppercase, range(1, 53)))
+
+    count = 0
+    for item in duplicate_map:
+        count += priority[item]
+    return count
 
 
 def adv3_2():
@@ -35,7 +45,7 @@ def adv3_2():
 
 
 def split_content(content: str) -> Tuple[str, str]:
-    half_length = int(len(content)/2)
+    half_length = len(content)//2
     return content[:half_length], content[half_length:-1]
 
 
