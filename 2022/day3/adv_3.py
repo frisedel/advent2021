@@ -8,14 +8,14 @@ def search_rucksack(rucksack: Tuple[str, str]) -> List[str]:
     for item in rucksack[0]:
         if item in rucksack[1]:
             duplicates.append(item)
-    return duplicates
+    return list(set(duplicates))
 
 
 def find_duplicates(rucksacks: List[Tuple[str, str]]) -> List[str]:
     duplicates = []
     for rucksack in rucksacks:
-        duplicates.append(search_rucksack(rucksack))
-    return [item for sublist in duplicates for item in sublist]
+        duplicates.extend(search_rucksack(rucksack))
+    return duplicates
 
 
 def create_map(duplicates: List[str]) -> Dict[str, int]:
@@ -36,7 +36,7 @@ def adv3_1(rucksacks: List[Tuple[str, str]]) -> int:
 
     count = 0
     for item in duplicate_map:
-        count += priority[item]
+        count += priority[item] * duplicate_map[item]
     return count
 
 
