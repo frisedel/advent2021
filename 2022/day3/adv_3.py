@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from typing import Dict, List, Tuple
-
+import string
 
 def search_rucksack(rucksack: Tuple[str, str]) -> List[str]:
     duplicates: List[str] = []
@@ -25,7 +25,8 @@ def adv3_1(rucksacks: List[Tuple[str, str]]):
             duplicate_map[item] = 1
         else:
             duplicate_map[item] += 1
-    print(duplicate_map)
+    priority = list(zip(string.ascii_lowercase, range(1, 27))) + list(zip(string.ascii_uppercase, range(27, 53)))
+
     return
 
 
