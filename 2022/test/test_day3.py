@@ -29,6 +29,6 @@ def test_search_rucksack():
 
 
 def test_adv3_1():
-    count = adv3_1(test_rucksacks)
+    count = adv3_1(test_content)
     print(count)
     assert count == 157

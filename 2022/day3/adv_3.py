@@ -28,7 +28,20 @@ def create_map(duplicates: List[str]) -> Dict[str, int]:
     return duplicate_map
 
 
-def adv3_1(rucksacks: List[Tuple[str, str]]) -> int:
+def split_content(content: str) -> Tuple[str, str]:
+    half_length = len(content)//2
+    return content[:half_length], content[half_length:]
+
+
+def create_rucksacks(rucksack_data: List[str]) -> List[Tuple[str, str]]:
+    rucksacks: List[Tuple[str, str]] = []
+    for data in rucksack_data:
+        rucksacks.append(split_content(data))
+    return rucksacks
+
+
+def adv3_1(rucksack_data: List[str]) -> int:
+    rucksacks = create_rucksacks(rucksack_data)
     duplicates = find_duplicates(rucksacks)
     duplicate_map = create_map(duplicates)
 
@@ -40,33 +53,32 @@ def adv3_1(rucksacks: List[Tuple[str, str]]) -> int:
     return count
 
 
-def adv3_2():
+def create_groups(group_data: List[str]) -> List[List[str]]:
+    return [group_data[i:i+3] for i in range(0, len(group_data),3)]
+
+
+def find_badge(elf_group: List[str]):
     return
 
-
-def split_content(content: str) -> Tuple[str, str]:
-    half_length = len(content)//2
-    return content[:half_length], content[half_length:-1]
-
-
-def create_rucksacks(rucksack_data: List[str]) -> List[Tuple[str, str]]:
-    rucksacks: List[Tuple[str, str]] = []
-    for data in rucksack_data:
-        rucksacks.append(split_content(data))
-    return rucksacks
+def adv3_2(elf_data: List[str]):
+    elf_groups = create_groups(elf_data)
+    badges: List[str] = []
+    for group in elf_groups:
+        badges.append(find_badge(group))
+    print(badges)
+    return
 
 
 def main():
 
     lines = []
     with open("rucksack_content.txt") as f:
-        lines = f.readlines()
+        lines = f.read().splitlines()
     f.close()
 
-    rucksacks = create_rucksacks(lines)
 
-    print("part 1 - : ", adv3_1(rucksacks))
-    print("part 2 - : ", adv3_2())
+    print("part 1 - Sum of priority item types:", adv3_1(lines))
+    print("part 2 - : ", adv3_2(lines))
 
 
 if __name__ == '__main__':
