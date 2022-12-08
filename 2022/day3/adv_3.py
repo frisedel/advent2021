@@ -3,6 +3,8 @@
 from typing import Dict, List, Tuple
 import string
 
+priority = dict(zip(string.ascii_lowercase+string.ascii_uppercase, range(1, 53)))
+
 def search_rucksack(rucksack: Tuple[str, str]) -> List[str]:
     duplicates: List[str] = []
     for item in rucksack[0]:
@@ -16,16 +18,6 @@ def find_duplicates(rucksacks: List[Tuple[str, str]]) -> List[str]:
     for rucksack in rucksacks:
         duplicates.extend(search_rucksack(rucksack))
     return duplicates
-
-
-def create_map(duplicates: List[str]) -> Dict[str, int]:
-    duplicate_map: Dict[str, int] = {}
-    for item in duplicates:
-        if item not in duplicate_map:
-            duplicate_map[item] = 1
-        else:
-            duplicate_map[item] += 1
-    return duplicate_map
 
 
 def split_content(content: str) -> Tuple[str, str]:
@@ -43,42 +35,44 @@ def create_rucksacks(rucksack_data: List[str]) -> List[Tuple[str, str]]:
 def adv3_1(rucksack_data: List[str]) -> int:
     rucksacks = create_rucksacks(rucksack_data)
     duplicates = find_duplicates(rucksacks)
-    duplicate_map = create_map(duplicates)
-
-    priority = dict(zip(string.ascii_lowercase+string.ascii_uppercase, range(1, 53)))
 
     count = 0
-    for item in duplicate_map:
-        count += priority[item] * duplicate_map[item]
+    for item in duplicates:
+        count += priority[item]
     return count
 
 
-def create_groups(group_data: List[str]) -> List[List[str]]:
-    return [group_data[i:i+3] for i in range(0, len(group_data),3)]
+def create_groups(elfs: List[str]) -> List[List[str]]:
+    return [elfs[i:i+3] for i in range(0, len(elfs), 3)]
 
 
-def find_badge(elf_group: List[str]):
-    return
+def find_badge(elf_group: List[str]) -> str:
+    for item in elf_group[0]:
+        if elf_group[1].find(item) != -1 and elf_group[2].find(item) != -1:
+            return item
+    raise Exception("Badge not found")
 
-def adv3_2(elf_data: List[str]):
+
+def adv3_2(elf_data: List[str]) -> int:
     elf_groups = create_groups(elf_data)
-    badges: List[str] = []
-    for group in elf_groups:
-        badges.append(find_badge(group))
-    print(badges)
-    return
+
+    badges: List[str] = [find_badge(group) for group in elf_groups]
+
+    priority_sum = 0
+    for badge in badges:
+        priority_sum += priority[badge]
+    return priority_sum
 
 
 def main():
 
-    lines = []
+    rucksack_data = []
     with open("rucksack_content.txt") as f:
-        lines = f.read().splitlines()
+        rucksack_data = f.read().splitlines()
     f.close()
 
-
-    print("part 1 - Sum of priority item types:", adv3_1(lines))
-    print("part 2 - : ", adv3_2(lines))
+    print("part 1 - Sum of priority item types:", adv3_1(rucksack_data))
+    print("part 2 - Sum of group priorities: ", adv3_2(rucksack_data))
 
 
 if __name__ == '__main__':
