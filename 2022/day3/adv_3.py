@@ -72,7 +72,7 @@ def main():
     f.close()
 
     print("part 1 - Sum of priority item types:", adv3_1(rucksack_data))
-    print("part 2 - Sum of group priorities: ", adv3_2(rucksack_data))
+    print("part 2 - Sum of group priorities:", adv3_2(rucksack_data))
 
 
 if __name__ == '__main__':
