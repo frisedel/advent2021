@@ -1,4 +1,4 @@
-from day4.adv_4 import adv4_1, create_pairs, fully_contains
+from day4.adv_4 import adv4_1, adv4_2, create_pairs, fully_contains, partially_overlaps
 from test_input.test_data_day4 import test_assignments
 
 test_pair = [[(2,4), (6,8)]]
@@ -16,7 +16,21 @@ def test_fully_contains():
     fully_contains3 = fully_contains(pair3)
     assert fully_contains3 == True
 
+def test_partially_overlaps():
+    pair0 = create_pairs([test_assignments[0]])[0]
+    fully_contains0 = partially_overlaps(pair0)
+    assert fully_contains0 == False
+
+    pair3 = create_pairs([test_assignments[3]])[0]
+    fully_contains3 = fully_contains(pair3)
+    assert fully_contains3 == True
+
 def test_adv4_1():
     pairs = create_pairs(test_assignments)
     count = adv4_1(pairs)
     assert count == 2
+
+def test_adv4_2():
+    pairs = create_pairs(test_assignments)
+    count = adv4_2(pairs)
+    assert count == 4
