@@ -35,7 +35,7 @@ def make_file_system(files_data: List[str]):
 def main():
 
     filesystem_data = []
-    with open("file_system.txt") as f:
+    with open("filesystem.txt") as f:
         filesystem_data = f.read().splitlines()
     f.close()
 
