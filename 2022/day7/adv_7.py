@@ -1,44 +1,48 @@
 #!/usr/bin/env python3
 
+from collections import defaultdict
+import pathlib
 from typing import List
 
-
-class Folder:
-    def __init__(self, dir_name: str, content: List[any] = []):
-        self.dir_name = dir_name
-        self.content = content
-
-class File:
-    def __init__(self, file_name: str, size: int):
-        self.file_name = file_name
-        self.size = size
-
-def adv7_1() -> int:
-    return
+root = pathlib.Path("/")
 
 
-def adv7_2() -> int:
-    return
+def adv7_1(filesystem: defaultdict(int)) -> int:
+    return sum(size for size in filesystem.values() if size <= 100000)
 
 
-def make_file_system() -> Folder:
-    return
+def adv7_2(filesystem: defaultdict(int)) -> int:
+    return min(size for size in filesystem.values() if size >= filesystem.get(root) - 40000000)
+
+
+def make_file_system(files_data: List[str]):
+    filesystem, cwd = defaultdict(int), root
+
+    for line in files_data:
+        if line.startswith("$ cd"):
+            path_arg = line.split()[-1]
+            cwd = {
+                "/": root,
+                "..": cwd.parent,
+            }.get(path_arg, cwd / path_arg)
+        elif line[0].isdigit():
+            file_path = cwd / line.split()[1]
+            while file_path != pathlib.Path("/"):
+                file_path = file_path.parent
+                filesystem[file_path] += int(line.split()[0])
+    return filesystem
 
 def main():
 
-    file_system_data = []
+    filesystem_data = []
     with open("file_system.txt") as f:
-        file_system_data = f.read().splitlines()
+        filesystem_data = f.read().splitlines()
     f.close()
 
-    # a = Folder("a")
-    # a.content.append(Folder("f"))
-    # print(type(a.content[0]))
+    filesystem = make_file_system(filesystem_data)
 
-    print(file_system_data)
-
-    print("part 1 - :", adv7_1())
-    print("part 2 - :", adv7_2())
+    print("part 1 - Total size of folders under 10000:", adv7_1(filesystem))
+    print("part 2 - Size of smallest folder to delete:", adv7_2(filesystem))
 
 
 if __name__ == '__main__':
