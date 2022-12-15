@@ -6,13 +6,22 @@ import numpy as np
 
 def adv8_1(forest: np.ndarray) -> int:
     rows, columns = np.shape(forest)
-
-    for x in range(0, rows):
-        for y in range(0, columns):
+    count = 0
+    for x in range(1, rows-1):
+        for y in range(1, columns-1):
             visible = False
-            if forest[x,y] > np.max(forest[0:x,:]): #not working
-                print("ello")
-    return
+            tree = forest[x,y]
+            if tree > np.max(forest[0:x,:]):
+                visible = True
+            elif tree > np.max(forest[x:-1,:]):
+                visible = True
+            elif tree > np.max(forest[:,0:y]):
+                visible = True
+            elif tree > np.max(forest[:,y:-1]):
+                visible = True
+            if visible:
+                count += 1
+    return count
 
 
 def adv8_2() -> int:
