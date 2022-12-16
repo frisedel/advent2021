@@ -6,26 +6,47 @@ import numpy as np
 
 def adv8_1(forest: np.ndarray) -> int:
     rows, columns = np.shape(forest)
-    count = 0
+    visability_count = 0
     for x in range(1, rows-1):
         for y in range(1, columns-1):
-            visible = False
             tree = forest[x,y]
             if tree > np.max(forest[x,0:y]):
-                visible = True
+                visability_count += 1
             elif tree > np.max(forest[x,y+1:]):
-                visible = True
+                visability_count += 1
             elif tree > np.max(forest[0:x:,y]):
-                visible = True
+                visability_count += 1
             elif tree > np.max(forest[x+1:,y]):
-                visible = True
-            if visible:
-                count += 1
-    return count + (rows * 2) + ((columns - 2) * 2)
+                visability_count += 1
+
+    return visability_count + (rows * 2) + ((columns - 2) * 2)
 
 
-def adv8_2() -> int:
-    return
+def directional_score(tree: int, forest_line: np.ndarray):
+    score = 0
+    for t in forest_line:
+        score += 1
+        if t >= tree:
+            break
+    return score
+
+
+def adv8_2(forest: np.ndarray) -> int:
+    rows, columns = np.shape(forest)
+    scenic_scores: List[int] = []
+    for x in range(rows):
+        for y in range(columns):
+            tree: int = forest[x,y]
+            directional_scores = [0,0,0,0]
+
+            directional_scores[0] = directional_score(tree, np.flip(forest[x,0:y]))
+            directional_scores[1] = directional_score(tree, forest[x,y+1:])
+            directional_scores[2] = directional_score(tree, np.flip(forest[0:x,y]))
+            directional_scores[3] = directional_score(tree, forest[x+1:,y])
+
+            scenic_scores.append(np.prod(directional_scores))
+
+    return max(scenic_scores)
 
 
 def map_forest(forest_data: List[str]) -> np.ndarray:
@@ -42,7 +63,7 @@ def main():
     forest = map_forest(forest_data)
 
     print("part 1 - Amount of trees visible from outside the forest:", adv8_1(forest))
-    print("part 2 - :", adv8_2())
+    print("part 2 - Highest scenic score:", adv8_2(forest))
 
 if __name__ == '__main__':
     main()
