@@ -11,17 +11,17 @@ def adv8_1(forest: np.ndarray) -> int:
         for y in range(1, columns-1):
             visible = False
             tree = forest[x,y]
-            if tree > np.max(forest[0:x,:]):
+            if tree > np.max(forest[x,0:y]):
                 visible = True
-            elif tree > np.max(forest[x:-1,:]):
+            elif tree > np.max(forest[x,y+1:]):
                 visible = True
-            elif tree > np.max(forest[:,0:y]):
+            elif tree > np.max(forest[0:x:,y]):
                 visible = True
-            elif tree > np.max(forest[:,y:-1]):
+            elif tree > np.max(forest[x+1:,y]):
                 visible = True
             if visible:
                 count += 1
-    return count
+    return count + (rows * 2) + ((columns - 2) * 2)
 
 
 def adv8_2() -> int:
@@ -41,7 +41,7 @@ def main():
 
     forest = map_forest(forest_data)
 
-    print("part 1 - :", adv8_1(forest))
+    print("part 1 - Amount of trees visible from outside the forest:", adv8_1(forest))
     print("part 2 - :", adv8_2())
 
 if __name__ == '__main__':
