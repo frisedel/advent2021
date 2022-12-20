@@ -15,70 +15,99 @@ def move_head(head: Dict[str, int], move: Movement):
     elif move.direction == "D":
         head["y"] -= move.amount
     else:
-        raise Exception("not a move")
+        raise Exception("the rope exploded, blame the elves")
 
 
-def move_tail(head: Dict[str, int], tail: Dict[str, int]):
-    x_diff = abs(head["x"] - tail["x"])
-    y_diff = abs(head["y"] - tail["y"])
+def move_tail(head: Dict[str, int], tail: Dict[str, int], tail_positions: List[str]) -> None:
+    # x_diff = abs(head["x"] - tail["x"])
+    # y_diff = abs(head["y"] - tail["y"])
 
-    if x_diff <= 1 and y_diff <= 1: # head next to tail, no move needed
+    if abs(head["x"] - tail["x"]) <= 1 and abs(head["y"] - tail["y"]) <= 1:
         return
 
-    elif y_diff == 0:                 # move on x axis
-        if tail["x"] < head["x"]:
-            for _ in range(x_diff-1):
-                tail["x"] += 1
-        else:
-            for _ in range(x_diff-1):
-                tail["x"] -= 1
+    if tail["x"] < head["x"]:
+        tail["x"] += 1
+    elif tail["x"] > head["x"]:
+        tail["x"] -= 1
 
-    elif x_diff == 0:                 # move on y axis
-        if tail["y"] < head["y"]:
-            for _ in range(y_diff-1):
-                tail["y"] += 1
-        else:
-            for _ in range(y_diff-1):
-                tail["y"] -= 1
+    if tail["y"] < head["y"]:
+        tail["y"] += 1
+    elif tail["y"] > head["y"]:
+        tail["y"] -= 1
 
-    elif x_diff >= 1 and y_diff >= 1:   # move on both axis
-        # for step in move
-            # if head X > tail X tail X ++
-            # if head X < tail X tail X --
-        return
-    return
+    tail_positions.append(f'{tail["x"]} {tail["y"]}')
+    move_tail(head, tail, tail_positions)
 
 
 def adv9_1(rope_movements: List[str]):
     head = {"x": 0, "y": 0}
     tail = {"x": 0, "y": 0}
 
-    tail_positions = []
+    tail_positions = ["0 0"]
 
     for move in rope_movements:
         move_head(head, move)
-        print("h", head, "t", tail)
-        move_tail(head, tail)
-        print("t", tail)
+        move_tail(head, tail, tail_positions)
 
-    return
+    return len(set(tail_positions))
 
 
-def adv9_2():
-    return
+def adv9_2(rope_movements: List[str]):
+    head = {"x": 0, "y": 0}
+    knot1 = {"x": 0, "y": 0}
+    knot2 = {"x": 0, "y": 0}
+    knot3 = {"x": 0, "y": 0}
+    knot4 = {"x": 0, "y": 0}
+    knot5 = {"x": 0, "y": 0}
+    knot6 = {"x": 0, "y": 0}
+    knot7 = {"x": 0, "y": 0}
+    knot8 = {"x": 0, "y": 0}
+    knot9 = {"x": 0, "y": 0}
+
+    knot1_positions = ["0 0"]
+    knot2_positions = ["0 0"]
+    knot3_positions = ["0 0"]
+    knot4_positions = ["0 0"]
+    knot5_positions = ["0 0"]
+    knot6_positions = ["0 0"]
+    knot7_positions = ["0 0"]
+    knot8_positions = ["0 0"]
+    knot9_positions = ["0 0"]
+
+    for move in rope_movements:
+        move_head(head, move)
+        move_tail(head, knot1, knot1_positions)
+        move_tail(knot1, knot2, knot2_positions)
+        move_tail(knot2, knot3, knot3_positions)
+        move_tail(knot3, knot4, knot4_positions)
+        move_tail(knot4, knot5, knot5_positions)
+        move_tail(knot5, knot6, knot6_positions)
+        move_tail(knot6, knot7, knot7_positions)
+        move_tail(knot7, knot8, knot8_positions)
+        move_tail(knot8, knot9, knot9_positions)
+
+    return len(set(knot9_positions))
+
+
+def extract_movements(rope_data: List[str]):
+    movements = []
+    for line in rope_data:
+        direction, amount = line.split()
+        movements.append(Movement(direction, int(amount)))
+    return movements
 
 
 def main():
 
-    rope_movements: List[Movement] = []
+    rope_data: List[Movement] = []
     with open("rope_data.txt") as f:
-        for line in f:
-            direction, amount = line.split()
-            rope_movements.append(Movement(direction, int(amount)))
+        rope_data = f.read().splitlines()
     f.close()
 
-    print("part 1 - :", adv9_1(rope_movements[:5]))
-    print("part 2 - :", adv9_2())
+    rope_movements = extract_movements(rope_data)
+
+    print("part 1 - Number of unique tail positions:", adv9_1(rope_movements))
+    print("part 2 - :", adv9_2(rope_movements))
 
 if __name__ == '__main__':
     main()
