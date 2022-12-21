@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from collections import namedtuple
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 Movement = namedtuple("Movement", ["direction", "amount"])
 
@@ -19,8 +19,6 @@ def move_head(head: Dict[str, int], move: Movement):
 
 
 def move_tail(head: Dict[str, int], tail: Dict[str, int], tail_positions: List[str]) -> None:
-    # x_diff = abs(head["x"] - tail["x"])
-    # y_diff = abs(head["y"] - tail["y"])
 
     if abs(head["x"] - tail["x"]) <= 1 and abs(head["y"] - tail["y"]) <= 1:
         return
@@ -54,39 +52,22 @@ def adv9_1(rope_movements: List[str]):
 
 def adv9_2(rope_movements: List[str]):
     head = {"x": 0, "y": 0}
-    knot1 = {"x": 0, "y": 0}
-    knot2 = {"x": 0, "y": 0}
-    knot3 = {"x": 0, "y": 0}
-    knot4 = {"x": 0, "y": 0}
-    knot5 = {"x": 0, "y": 0}
-    knot6 = {"x": 0, "y": 0}
-    knot7 = {"x": 0, "y": 0}
-    knot8 = {"x": 0, "y": 0}
-    knot9 = {"x": 0, "y": 0}
-
-    knot1_positions = ["0 0"]
-    knot2_positions = ["0 0"]
-    knot3_positions = ["0 0"]
-    knot4_positions = ["0 0"]
-    knot5_positions = ["0 0"]
-    knot6_positions = ["0 0"]
-    knot7_positions = ["0 0"]
-    knot8_positions = ["0 0"]
-    knot9_positions = ["0 0"]
+    knots = [{"x": 0, "y": 0} for _ in range(9)]
+    knots_positions = [["0 0"] for _ in range(9)]
 
     for move in rope_movements:
         move_head(head, move)
-        move_tail(head, knot1, knot1_positions)
-        move_tail(knot1, knot2, knot2_positions)
-        move_tail(knot2, knot3, knot3_positions)
-        move_tail(knot3, knot4, knot4_positions)
-        move_tail(knot4, knot5, knot5_positions)
-        move_tail(knot5, knot6, knot6_positions)
-        move_tail(knot6, knot7, knot7_positions)
-        move_tail(knot7, knot8, knot8_positions)
-        move_tail(knot8, knot9, knot9_positions)
+        move_tail(head, knots[0], knots_positions[0])
+        move_tail(knots[0], knots[1], knots_positions[1])
+        move_tail(knots[1], knots[2], knots_positions[2])
+        move_tail(knots[2], knots[3], knots_positions[3])
+        move_tail(knots[3], knots[4], knots_positions[4])
+        move_tail(knots[4], knots[5], knots_positions[5])
+        move_tail(knots[5], knots[6], knots_positions[6])
+        move_tail(knots[6], knots[7], knots_positions[7])
+        move_tail(knots[7], knots[8], knots_positions[8])
 
-    return len(set(knot9_positions))
+    return len(set(knots_positions[-1]))
 
 
 def extract_movements(rope_data: List[str]):
@@ -105,6 +86,8 @@ def main():
     f.close()
 
     rope_movements = extract_movements(rope_data)
+
+    test_large = extract_movements(["R 5", "U 8", "L 8", "D 3", "R 17", "D 10", "L 25", "U 20"])
 
     print("part 1 - Number of unique tail positions:", adv9_1(rope_movements))
     print("part 2 - :", adv9_2(rope_movements))
