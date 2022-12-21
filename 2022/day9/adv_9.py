@@ -5,7 +5,7 @@ from typing import Dict, List
 
 Movement = namedtuple("Movement", ["direction", "amount"])
 
-def move_head(head: Dict[str, int], move: Movement):
+def move_head(head: Dict[str, int], move: Movement) -> None:
     if move.direction == "R":
         head["x"] += move.amount
     elif move.direction == "L":
@@ -19,7 +19,6 @@ def move_head(head: Dict[str, int], move: Movement):
 
 
 def move_tail(head: Dict[str, int], tail: Dict[str, int], tail_positions: List[str]) -> None:
-
     if abs(head["x"] - tail["x"]) <= 1 and abs(head["y"] - tail["y"]) <= 1:
         return
 
@@ -37,7 +36,7 @@ def move_tail(head: Dict[str, int], tail: Dict[str, int], tail_positions: List[s
     move_tail(head, tail, tail_positions)
 
 
-def adv9_1(rope_movements: List[str]):
+def adv9_1(rope_movements: List[Movement]) -> int:
     head = {"x": 0, "y": 0}
     tail = {"x": 0, "y": 0}
 
@@ -50,7 +49,12 @@ def adv9_1(rope_movements: List[str]):
     return len(set(tail_positions))
 
 
-def adv9_2(rope_movements: List[str]):
+def move_rope(head: Dict[str, int], knots: List[Dict[str, int]], knot_positions: List[List[str]]):
+    # move first knot as before but in steps
+    return
+
+
+def adv9_2(rope_movements: List[str]) -> int:
     head = {"x": 0, "y": 0}
     knots = [{"x": 0, "y": 0} for _ in range(9)]
     knots_positions = [["0 0"] for _ in range(9)]
@@ -70,8 +74,8 @@ def adv9_2(rope_movements: List[str]):
     return len(set(knots_positions[-1]))
 
 
-def extract_movements(rope_data: List[str]):
-    movements = []
+def extract_movements(rope_data: List[str]) -> List[Movement]:
+    movements: List[Movement] = []
     for line in rope_data:
         direction, amount = line.split()
         movements.append(Movement(direction, int(amount)))
@@ -80,14 +84,12 @@ def extract_movements(rope_data: List[str]):
 
 def main():
 
-    rope_data: List[Movement] = []
+    rope_data: List[str] = []
     with open("rope_data.txt") as f:
         rope_data = f.read().splitlines()
     f.close()
 
     rope_movements = extract_movements(rope_data)
-
-    test_large = extract_movements(["R 5", "U 8", "L 8", "D 3", "R 17", "D 10", "L 25", "U 20"])
 
     print("part 1 - Number of unique tail positions:", adv9_1(rope_movements))
     print("part 2 - :", adv9_2(rope_movements))
