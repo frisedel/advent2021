@@ -25,6 +25,7 @@ def adv10_1(cycle_data: List[str]) -> int:
 
 
 def adv10_2():
+    CRT_screen = [["."] * 40 for _ in range(6)]
     return
 
 
