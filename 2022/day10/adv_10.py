@@ -24,8 +24,20 @@ def adv10_1(cycle_data: List[str]) -> int:
     return sum(signal_strenghts)
 
 
-def adv10_2():
-    CRT_screen = [["."] * 40 for _ in range(6)]
+def adv10_2(cycle_data: List[str]):
+    cycle = 0
+    register_X = 1
+    CRT_screen = ["." * 40 for _ in range(6)]
+    for data in cycle_data:
+        if data != "noop":
+            # draw pixel if register_X has the same value as cyckle % 40 or something, either here or after cycle += 1
+            cycle += 1
+            _, value = data.split(" ")
+            register_X += int(value)
+        # draw pixel if register_X has the same value as cyckle % 40 or something, either here or after cycle += 1
+        cycle += 1
+        return
+
     return
 
 
@@ -37,7 +49,7 @@ def main():
     f.close()
 
     print("part 1 - Sum of the six signal strengths:", adv10_1(cycle_data))
-    print("part 2 - :", adv10_2())
+    print("part 2 - :", adv10_2(cycle_data))
 
 if __name__ == '__main__':
     main()
