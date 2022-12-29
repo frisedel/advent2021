@@ -25,7 +25,7 @@ def add(a: int, b: int):
 
 
 def adv11_1(monkeys: List[Monkey]) -> int:
-    for round in range(20):
+    for _ in range(20):
         for monkey in monkeys:
             while monkey.items:
                 item = monkey.items.popleft()
@@ -36,13 +36,31 @@ def adv11_1(monkeys: List[Monkey]) -> int:
                     monkeys[monkey.throws_to.true].items.append(new_wory_level)
                 else:
                     monkeys[monkey.throws_to.false].items.append(new_wory_level)
-    for monkey in monkeys:
-        print(monkey.inspected_items)
-    return
+
+    inspections = [monkey.inspected_items for monkey in monkeys]
+    inspections.sort(reverse=True)
+
+    return inspections[0] * inspections[1]
 
 
-def adv11_2(monkey_data: List[str]):
-    return
+def adv11_2(monkeys: List[Monkey]):
+    for i in range(10000):
+        print(i)
+        for monkey in monkeys:
+            while monkey.items:
+                item = monkey.items.popleft()
+                b_value = int(monkey.operation_value) if monkey.operation_value != "old" else item
+                new_wory_level = monkey.operation(item, b_value)
+                monkey.inspected_items += 1
+                if new_wory_level % monkey.test_value == 0:
+                    monkeys[monkey.throws_to.true].items.append(new_wory_level)
+                else:
+                    monkeys[monkey.throws_to.false].items.append(new_wory_level)
+
+    inspections = [monkey.inspected_items for monkey in monkeys]
+    inspections.sort(reverse=True)
+
+    return inspections[0] * inspections[1]
 
 
 def parse_monkeys(monkey_data: List[str]):
@@ -68,7 +86,7 @@ def main():
 
     monkeys: List[Monkey] = parse_monkeys(monkey_data)
 
-    print("part 1 - :", adv11_1(monkeys))
+    print("part 1 - Level of monkey business after 20 rounds:", adv11_1(monkeys))
     print("part 2 - :", adv11_2(monkeys))
 
 
