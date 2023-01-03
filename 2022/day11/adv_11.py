@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from collections import namedtuple, deque
+import copy
 from typing import Callable, Deque, List
 
 Throws_to = namedtuple("Throws_to", "true false")
@@ -43,9 +44,8 @@ def adv11_1(monkeys: List[Monkey]) -> int:
     return inspections[0] * inspections[1]
 
 
-def adv11_2(monkeys: List[Monkey]):
-    for i in range(10000):
-        print(i)
+def adv11_2(monkeys: List[Monkey], worry_modifier: int) -> int:
+    for _ in range(10000):
         for monkey in monkeys:
             while monkey.items:
                 item = monkey.items.popleft()
@@ -53,9 +53,9 @@ def adv11_2(monkeys: List[Monkey]):
                 new_wory_level = monkey.operation(item, b_value)
                 monkey.inspected_items += 1
                 if new_wory_level % monkey.test_value == 0:
-                    monkeys[monkey.throws_to.true].items.append(new_wory_level)
+                    monkeys[monkey.throws_to.true].items.append(new_wory_level % worry_modifier)
                 else:
-                    monkeys[monkey.throws_to.false].items.append(new_wory_level)
+                    monkeys[monkey.throws_to.false].items.append(new_wory_level % worry_modifier)
 
     inspections = [monkey.inspected_items for monkey in monkeys]
     inspections.sort(reverse=True)
@@ -64,6 +64,7 @@ def adv11_2(monkeys: List[Monkey]):
 
 
 def parse_monkeys(monkey_data: List[str]):
+    worry_modifier = 1
     monkeys: List[Monkey] = []
     for i in range(0, len(monkey_data), 7):
         number = int(list(monkey_data[i].split(" ")[1])[0])
@@ -71,23 +72,24 @@ def parse_monkeys(monkey_data: List[str]):
         operation = multiply if (monkey_data[i+2].split(" ")[-2]) == "*" else add
         operation_value = (monkey_data[i+2].split(" ")[-1])
         test_value = int(monkey_data[i+3].split(" ")[-1])
+        worry_modifier *= test_value
         throws_to = Throws_to(int(monkey_data[i+4].split(" ")[-1]), int(monkey_data[i+5].split(" ")[-1]))
 
         monkeys.append(Monkey(number, items, operation, operation_value, test_value, throws_to))
-    return monkeys
+    return monkeys, worry_modifier
 
 
 def main():
 
     monkey_data: List[str] = []
-    with open("mokey_data.txt") as f:
+    with open("monkey_data.txt") as f:
         monkey_data = f.read().splitlines()
     f.close()
 
-    monkeys: List[Monkey] = parse_monkeys(monkey_data)
+    monkeys, worry_modifier = parse_monkeys(monkey_data)
 
-    print("part 1 - Level of monkey business after 20 rounds:", adv11_1(monkeys))
-    print("part 2 - :", adv11_2(monkeys))
+    print("part 1 - Level of monkey business after 20 rounds:", adv11_1(copy.deepcopy(monkeys)))
+    print("part 2 - Level of monkey business after 10000 rounds:", adv11_2(copy.deepcopy(monkeys), worry_modifier))
 
 
 if __name__ == '__main__':
