@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List
 
 def adv2_1(games: List[str]) -> int:
     max_colors: Dict = {
