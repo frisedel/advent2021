@@ -7,6 +7,6 @@ def test_adv3_1():
     sum_engine_schematics = adv3_1(part_1)
     assert sum_engine_schematics == 4361
 
-# def test_adv3_2():
-#     sum_power_sets = adv3_2(part_1)
-#     assert sum_power_sets == 2286
+def test_adv3_2():
+    sum_gear_ratios = adv3_2(part_1)
+    assert sum_gear_ratios == 467835
